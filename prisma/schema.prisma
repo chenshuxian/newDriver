@@ -1,0 +1,181 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model exam {
+  exam_id      String   @id @default(uuid()) @db.Char(36)
+  exam_number  String?  @db.VarChar(36)
+  exam_title   String   @db.VarChar(200)
+  exam_option  String   @default("") @db.VarChar(255)
+  exam_ans     String   @default("") @db.VarChar(50)
+  exam_img_url String?  @db.VarChar(150)
+  create_time  DateTime @default(now()) @db.Timestamp(0)
+  update_time  DateTime @default(now()) @db.Timestamp(0)
+  is_delete    Boolean  @default(false)
+}
+
+model fixStore {
+  id   String  @id @db.VarChar(50)
+  name String? @db.VarChar(50)
+}
+
+model mCar {
+  id         String @id @db.VarChar(50)
+  car_number String @db.VarChar(100)
+  car_maker  String @db.VarChar(40)
+  engin_id   String @db.VarChar(40)
+  born_date  BigInt
+  ins_date   BigInt
+  cc         BigInt
+  color      String @db.VarChar(10)
+  lic_status String @db.VarChar(100)
+  hand_auto  String @db.VarChar(40)
+  road_car   Int
+  createdAt  BigInt
+  updatedAt  BigInt
+  version    BigInt
+}
+
+model mCarDetail {
+  id         String  @id @db.VarChar(50)
+  car_id     String  @db.VarChar(100)
+  teacher_id String  @db.VarChar(50)
+  fix_date   BigInt
+  fix_store  String  @db.VarChar(50)
+  device     String? @db.VarChar(255)
+  num        Int
+  price      Int
+  salary     Int?
+  totalPrice Int
+  createdAt  BigInt
+  updatedAt  BigInt
+  version    Int?
+}
+
+model score {
+  id        String  @id @db.VarChar(50)
+  studentId String  @db.VarChar(50)
+  score     String  @db.VarChar(10)
+  createdAt BigInt
+  wrongQ    String? @db.VarChar(200)
+  updatedAt BigInt
+  examId    BigInt?
+}
+
+model users {
+  user_id           String      @id @unique(map: "user_id_UNIQUE") @db.VarChar(36)
+  user_name         String      @db.VarChar(100)
+  user_stu_num      String?     @db.VarChar(16)
+  user_gender       String?     @db.VarChar(2)
+  user_born         DateTime?   @db.Timestamp(0)
+  user_password     String?     @db.VarChar(45)
+  user_email        String?     @db.VarChar(72)
+  user_addr         String?     @db.VarChar(255)
+  user_tel          String?     @db.VarChar(11)
+  user_mobile       String?     @db.VarChar(11)
+  user_payment_date DateTime?   @default(now()) @db.Timestamp(0)
+  user_payment      String?     @db.VarChar(11)
+  user_memo         String?     @db.VarChar(255)
+  class_type_id     String?     @db.VarChar(36)
+  post_code_id      String?     @db.VarChar(36)
+  car_type_id       String?     @db.VarChar(36)
+  source_id         String?     @db.VarChar(36)
+  train_book_id     String?     @db.VarChar(36)
+  create_time       DateTime?   @default(now()) @db.Timestamp(0)
+  update_time       DateTime?   @default(now()) @db.Timestamp(0)
+  is_delete         Boolean?    @default(false)
+  car_type          car_type?   @relation(fields: [car_type_id], references: [car_type_id], onDelete: NoAction, onUpdate: NoAction, map: "car_type_id_fk")
+  class_type        class_type? @relation(fields: [class_type_id], references: [class_type_id], onDelete: NoAction, onUpdate: NoAction, map: "class_type_id_fk")
+  post_code         post_code?  @relation(fields: [post_code_id], references: [post_code_id], onDelete: NoAction, onUpdate: NoAction, map: "post_code_id_fk")
+  source            source?     @relation(fields: [source_id], references: [source_id], onDelete: NoAction, onUpdate: NoAction, map: "source_id_fk")
+  train_book        train_book? @relation(fields: [train_book_id], references: [train_book_id], onDelete: NoAction, onUpdate: NoAction, map: "train_book_id")
+
+  @@index([car_type_id], map: "car_type_id_fk_idx")
+  @@index([class_type_id], map: "class_type_id_fk_idx")
+  @@index([post_code_id], map: "post_code_id_fk_idx")
+  @@index([source_id], map: "source_id_fk_idx")
+  @@index([train_book_id], map: "train_book_id_idx")
+}
+
+model teacher {
+  teacher_id   String    @id @db.VarChar(36)
+  teacher_name String?   @db.VarChar(100)
+  teacher_born String?   @db.VarChar(20)
+  create_time  DateTime? @default(now()) @db.Timestamp(0)
+  update_time  DateTime? @default(now()) @db.Timestamp(0)
+  is_delete    Boolean?  @default(false)
+}
+
+model car_type {
+  car_type_id   String    @id @unique(map: "car_type_id_UNIQUE") @db.VarChar(36)
+  car_type_name String?   @db.VarChar(12)
+  create_time   DateTime? @default(now()) @db.Timestamp(0)
+  update_time   DateTime? @default(now()) @db.Timestamp(0)
+  is_delete     Boolean?  @default(false)
+  users         users[]
+}
+
+model post_code {
+  post_code_id   String    @id @unique(map: "post_code_id_UNIQUE") @default("UUID()") @db.VarChar(36)
+  post_code_name String?   @db.VarChar(36)
+  post_code_addr String?   @db.VarChar(45)
+  create_time    DateTime? @default(now()) @db.Timestamp(0)
+  update_time    DateTime? @default(now()) @db.Timestamp(0)
+  is_delete      Boolean?  @default(false)
+  users          users[]
+}
+
+model time {
+  time_id     Int       @id
+  time_name   String?   @db.VarChar(50)
+  create_time DateTime? @default(now()) @db.Timestamp(0)
+  update_time DateTime? @default(now()) @db.Timestamp(0)
+  is_delete   Boolean?  @default(false)
+}
+
+model train_period {
+  train_period_id    String?   @default(uuid()) @db.VarChar(36)
+  train_period_name  String    @id @db.VarChar(12)
+  train_period_start String?   @db.VarChar(50)
+  train_period_end   String?   @db.VarChar(50)
+  train_period_exam  String?   @db.VarChar(50)
+  create_time        DateTime? @default(now()) @db.Timestamp(0)
+  update_time        DateTime? @default(now()) @db.Timestamp(0)
+}
+
+model class_type {
+  class_type_id   String    @id @unique(map: "class_type_id_UNIQUE") @db.VarChar(36)
+  class_type_name String?   @db.VarChar(12)
+  create_time     DateTime? @default(now()) @db.Timestamp(0)
+  update_time     DateTime? @default(now()) @db.Timestamp(0)
+  is_delete       Boolean?  @default(false)
+  users           users[]
+}
+
+model source {
+  source_id   String    @id @unique(map: "source_id_UNIQUE") @db.VarChar(36)
+  source_name String?   @db.VarChar(12)
+  create_time DateTime? @default(now()) @db.Timestamp(0)
+  update_time DateTime? @default(now()) @db.Timestamp(0)
+  is_delete   Boolean?  @default(false)
+  users       users[]
+}
+
+model train_book {
+  train_book_id   String   @id @default(uuid()) @db.VarChar(36)
+  train_period_id String?  @db.VarChar(36)
+  teacher_id      String?  @db.VarChar(36)
+  time_id         Int?
+  create_time     DateTime @default(now()) @db.Timestamp(0)
+  update_time     DateTime @default(now()) @db.Timestamp(0)
+  users           users[]
+
+  @@index([teacher_id], map: "teacher_id_fk_idx")
+  @@index([time_id], map: "time_id_fk_idx")
+  @@index([train_period_id], map: "train_period_id_fk_idx")
+}
