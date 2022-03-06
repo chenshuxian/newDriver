@@ -49,8 +49,8 @@ app.prepare().then(() => {
 
 	var httpsServer = http.createServer(app);
 
-	httpsServer.listen(3000, (err) => {
+	httpsServer.listen(port, (err) => {
 		if (err) throw err;
-		console.log(`> Ready on http://localhost:${3000}`);
+		console.log(`> Ready on http://localhost:${port}`);
 	});
 });
