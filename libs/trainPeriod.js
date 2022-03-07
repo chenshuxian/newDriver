@@ -44,17 +44,19 @@ const getTrainPeriod = async function (filter, pagination) {
 
 // 取得本月期別
 const getNearPeriod = async function () {
-	let train_period_id;
+	let train_period_id, result;
 	let today = await getToday(true);
 	today = today.replaceAll('-', '/');
 	today = today.substr(0, 6);
 
 	let SQL = `SELECT train_period_id FROM train_period where train_period_start like '${today}%' limit 1`;
-	[{ train_period_id }] = await prisma.$queryRawUnsafe(SQL);
-	console.log(`nearPeriod ${train_period_id}`);
-	if (train_period_id == null) {
+	result = await prisma.$queryRawUnsafe(SQL);
+
+	if (result == '') {
 		SQL = `SELECT train_period_id FROM train_period limit 1`;
 		[{ train_period_id }] = await prisma.$queryRawUnsafe(SQL);
+	} else {
+		train_period_id = result[0].train_period_id;
 	}
 
 	return train_period_id;
