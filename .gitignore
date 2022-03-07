@@ -5,6 +5,7 @@
 /__mocks__
 /static
 jspm_packages
+drive.config.js
 
 # misc
 .DS_Store
@@ -59,4 +60,4 @@ build/Release
 package-lock.json
 
 next.config copy.js
-drive.config.js
+
