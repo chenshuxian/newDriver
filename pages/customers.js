@@ -77,7 +77,7 @@ export async function getServerSideProps(context) {
 	data.gender = { 1: '男', 2: '女' };
 	data.thisPeriod = period;
 
-	console.log(data.time);
+	// console.log(data.time);
 
 	await train.trainPeriod.map((c) => {
 		b[`${c.train_period_id}`] = c;

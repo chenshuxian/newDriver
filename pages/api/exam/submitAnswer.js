@@ -1,6 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { checkAnswer, getExamTypeId } from '../../../libs/exam';
-import { createTicket } from '../../../libs/ticket';
 import errorCode from '../../../libs/errorCode';
 import { isLogin, getUserId } from '../../../libs/auth';
 import { getUserById, updateUser } from '../../../libs/user';
@@ -50,7 +49,7 @@ const passScore = 85;
  *                       exam_ans:
  *                         type: string
  *                         description: Correct answer
- *                         example: 符籙 
+ *                         example: 符籙
  *                       exam_ans_err:
  *                         type: string
  *                         description: User answer
@@ -86,85 +85,82 @@ const passScore = 85;
  *                   description: The error message
  *                   example: Daily quota exceeded
  */
-export default async(req, res) => {
-  const {
-    body: answerData,
-    method
-  } = req
+export default async (req, res) => {
+	const { body: answerData, method } = req;
 
-  if (!await isLogin(req)) {
-    res.status(401).json(errorCode.Unauthorized);
-    return;
-  }
+	if (!(await isLogin(req))) {
+		res.status(401).json(errorCode.Unauthorized);
+		return;
+	}
 
-  let ticket
-  switch (method) {
-    case 'POST':
-      let examAnsErr;
-      let score;
-      let isPass = false;
-      let isQuotaExceeded = false;
-      let userId;
-      let user;
-      let ticketId;
+	let ticket;
+	switch (method) {
+		case 'POST':
+			let examAnsErr;
+			let score;
+			let isPass = false;
+			let isQuotaExceeded = false;
+			let userId;
+			let user;
+			let ticketId;
 
-      if (!answerData || typeof answerData !== 'object') {
-        res.status(400).json(errorCode.BadRequest);
-        return;
-      }
+			if (!answerData || typeof answerData !== 'object') {
+				res.status(400).json(errorCode.BadRequest);
+				return;
+			}
 
-      userId = await getUserId(req);
-      //console.log(`authID: ${userId}`)
+			userId = await getUserId(req);
+			//console.log(`authID: ${userId}`)
 
-      try {
-        user = await getUserById(userId);
-      } catch (e) {
-        if (e === errorCode.NotFound) {
-          //console.log(`post auth err NotFound`)
-          res.status(401).json(errorCode.Unauthorized);
-          return;
-        }
-      }
+			try {
+				user = await getUserById(userId);
+			} catch (e) {
+				if (e === errorCode.NotFound) {
+					//console.log(`post auth err NotFound`)
+					res.status(401).json(errorCode.Unauthorized);
+					return;
+				}
+			}
 
-      isQuotaExceeded = !user.is_shared && user.is_played
+			isQuotaExceeded = !user.is_shared && user.is_played;
 
-      if (isQuotaExceeded) {
-        res.status(400).json(errorCode.QuotaExceeded);
-        return;
-      }
+			if (isQuotaExceeded) {
+				res.status(400).json(errorCode.QuotaExceeded);
+				return;
+			}
 
-      try {
-        examAnsErr = await checkAnswer(answerData);
-        if (examAnsErr) {
-          score = (Object.keys(answerData).length - examAnsErr.length) * 10
-          examAnsErr = examAnsErr.map( exam => {
-            return {
-              exam_title: exam.exam_title,
-              exam_ans: exam.exam_option[exam.exam_ans - 1],
-              exam_ans_err: exam.exam_option[answerData[exam.exam_id] - 1]
-            };
-          });
-        } else {
-          score = 100;
-        }
+			try {
+				examAnsErr = await checkAnswer(answerData);
+				if (examAnsErr) {
+					score = (Object.keys(answerData).length - examAnsErr.length) * 10;
+					examAnsErr = examAnsErr.map((exam) => {
+						return {
+							exam_title: exam.exam_title,
+							exam_ans: exam.exam_option[exam.exam_ans - 1],
+							exam_ans_err: exam.exam_option[answerData[exam.exam_id] - 1],
+						};
+					});
+				} else {
+					score = 100;
+				}
 
-        isPass = score >= passScore;
-      } catch (e) {
-        res.status(e.statusCode).json(e);
-        return;
-      }
+				isPass = score >= passScore;
+			} catch (e) {
+				res.status(e.statusCode).json(e);
+				return;
+			}
 
-      res.status(200).json({
-        score,
-        ansList: examAnsErr
-      });
-      return;
-      break
-    default:
-      res.setHeader('Allow', ['GET', 'POST']);
-      res.status(405).json(errorCode.MethodNotAllowed);
-      return;
-  }
+			res.status(200).json({
+				score,
+				ansList: examAnsErr,
+			});
+			return;
+			break;
+		default:
+			res.setHeader('Allow', ['GET', 'POST']);
+			res.status(405).json(errorCode.MethodNotAllowed);
+			return;
+	}
 
-  res.status(500).json(errorCode.InternalServerError);
+	res.status(500).json(errorCode.InternalServerError);
 };
