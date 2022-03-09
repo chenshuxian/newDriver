@@ -1,83 +1,68 @@
-import { YEAR } from "./front/constText";
-import axios from "axios";
+import { YEAR } from './front/constText';
+import axios from 'axios';
 
-const selectList = (arr, id, value) => 
-{
-    let newArr;
-    newArr = arr.reduce((a,c)=> [...a,{[c[`${id}`]]: c[`${value}`]}],[]);
-    
-    return newArr;
-}
+const selectList = (arr, id, value) => {
+	let newArr;
+	newArr = arr.reduce((a, c) => [...a, { [c[`${id}`]]: c[`${value}`] }], []);
 
-const objectFlat = (arr, key, value) =>
-{
-    let b ={}
-    arr.map((c)=> {
-        b[c[`${key}`]]= c[`${value}`]
-    },b);
-   
-   return b
-}
+	return newArr;
+};
+
+const objectFlat = (arr, key, value) => {
+	let b = {};
+	arr.map((c) => {
+		b[c[`${key}`]] = c[`${value}`];
+	}, b);
+
+	return b;
+};
 
 const getToday = (mi = false, day) => {
-    let today = new Date();
-    if(day){
-        today = new Date(day);
-    }
-    let y = today.getFullYear();
-    let m = today.getMonth() + 1;
-    let d = today.getDate();
+	let today = new Date();
+	if (day) {
+		today = new Date(day);
+	}
+	let y = today.getFullYear();
+	let m = today.getMonth() + 1;
+	let d = today.getDate();
 
-    if(mi) {
-        y = y - YEAR;
-        if(y < 100) {
-            y = `0${y}`;
-        }
-    }
+	if (mi) {
+		y = y - YEAR;
+		if (y < 100) {
+			y = `0${y}`;
+		}
+	}
 
-    m = m < 10 ? `0${m}` : m; 
-    d = d < 10 ? `0${d}` : d; 
+	m = m < 10 ? `0${m}` : m;
+	d = d < 10 ? `0${d}` : d;
 
-    return `${y}-${m}-${d}`;
-}
+	return `${y}-${m}-${d}`;
+};
 
 const getFirstId = (obj) => {
-    return Object.keys(obj)[0];
-}
+	return Object.keys(obj)[0];
+};
 
 //1110112 => 111/01/12
 const strToDate = (str) => {
+	let y = str.substr(0, 3);
+	let m = str.substr(3, 2);
+	let d = str.substr(5, 2);
 
-    let y = str.substr(0,3);
-    let m = str.substr(3,2);
-    let d = str.substr(5,2);
-  
-    return `${y}/${m}/${d}`
-}
+	return `${y}/${m}/${d}`;
+};
 
 function download(url, setDisabled) {
-    axios({
-          url,
-          method: 'GET',
-          responseType: 'blob'
-    })
-    .then((response) => {
-        console.log(response);
-        setDisabled(false);
-            // const url = window.URL
-            //       .createObjectURL(new Blob([response.data]));
-            // const link = document.createElement('a');
-            // link.href = url;
-            // link.setAttribute('download', 'test.zip');
-            // document.body.appendChild(link);
-            // link.click();
-            // document.body.removeChild(link);
-    }).catch(err => 
-        setDisabled(true)
-    );
+	axios({
+		url,
+		method: 'GET',
+		responseType: 'blob',
+	})
+		.then((response) => {
+			console.log(response);
+			setDisabled(false);
+		})
+		.catch((err) => setDisabled(true));
 }
 
-
- 
-
-export {selectList, objectFlat, getToday, getFirstId, strToDate, download};
+export { selectList, objectFlat, getToday, getFirstId, strToDate, download };

@@ -23,7 +23,7 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 	let url = `/static/download/`;
 
 	const handleChange = (event) => {
-		const durl = `${url}${trainPeriod[event.target.value]}.zip`;
+		const durl = `/${trainPeriod[event.target.value]}.zip`;
 		setPeriod(event.target.value);
 		download(durl, setDisabled);
 	};
@@ -73,7 +73,7 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 						startIcon={<CloudDownloadIcon fontSize='small' />}
 						sx={{ mr: 1 }}
 						onClick={() =>
-							(window.location.href = `${url}${trainPeriod[period]}.zip`)
+							(window.location.href = `/${trainPeriod[period]}.zip`)
 						}
 						disabled={disabled}>
 						{BUTTON_TWO}
