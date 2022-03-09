@@ -1,21 +1,15 @@
-import Head from 'next/head';
 import React from 'react';
 import { Box, Container } from '@mui/material';
-import {
-	DataGrid,
-	gridFilterActiveItemsLookupSelector,
-} from '@mui/x-data-grid';
-import { CustomerListResults } from '../components/customer/customer-list-results';
-import { CustomerListToolbar } from '../components/customer/customer-list-toolbar';
-import { DashboardLayout } from '../components/dashboard-layout';
-import { getTeacher } from '../libs/teacher';
-import { getTrainPeriod, getNearPeriod } from '../libs/trainPeriod';
-import { getTime } from '../libs/time';
-import { getCarType } from '../libs/carType';
-import { getPostCode } from '../libs/postCode';
-import { getClassType } from '../libs/classType';
-import { getSource } from '../libs/source';
-import { objectFlat } from '../libs/common';
+import { CustomerListResults } from '../../components/customer/customer-list-results';
+import { DashboardLayout } from '../../components/dashboard-layout';
+import { getTeacher } from '../../libs/teacher';
+import { getTrainPeriod, getNearPeriod } from '../../libs/trainPeriod';
+import { getTime } from '../../libs/time';
+import { getCarType } from '../../libs/carType';
+import { getPostCode } from '../../libs/postCode';
+import { getClassType } from '../../libs/classType';
+import { getSource } from '../../libs/source';
+import { objectFlat } from '../../libs/common';
 
 const Customers = ({ data }) => {
 	// console.log(data.trainPeriodDetail);
@@ -39,7 +33,7 @@ const Customers = ({ data }) => {
 
 Customers.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export async function getServerSideProps(context) {
+export async function getStaticProps(context) {
 	let data = {};
 	let b = {};
 	const t = await getTeacher();

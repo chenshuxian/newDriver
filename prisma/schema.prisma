@@ -9,14 +9,14 @@ datasource db {
 
 model exam {
   exam_id      String   @id @default(uuid()) @db.Char(36)
-  exam_number  String?  @db.VarChar(36)
+  exam_number  String   @db.VarChar(11)
   exam_title   String   @db.VarChar(200)
   exam_option  String   @default("") @db.VarChar(255)
   exam_ans     String   @default("") @db.VarChar(50)
   exam_img_url String?  @db.VarChar(150)
   create_time  DateTime @default(now()) @db.Timestamp(0)
   update_time  DateTime @default(now()) @db.Timestamp(0)
-  is_delete    Boolean  @default(false)
+  is_delete    Int      @default(0) @db.TinyInt
 }
 
 model fixStore {
@@ -68,11 +68,12 @@ model score {
 }
 
 model users {
-  user_id           String      @id @unique(map: "user_id_UNIQUE") @db.VarChar(36)
+  user_uuid         String      @id @default(uuid()) @db.VarChar(36) 
+  user_id           String      @unique(map: "user_id_UNIQUE") @db.VarChar(36)
   user_name         String      @db.VarChar(100)
   user_stu_num      String?     @db.VarChar(16)
   user_gender       String?     @db.VarChar(2)
-  user_born         DateTime?   @db.Timestamp(0)
+  user_born         DateTime?   @db.DateTime(0)
   user_password     String?     @db.VarChar(45)
   user_email        String?     @db.VarChar(72)
   user_addr         String?     @db.VarChar(255)
@@ -178,4 +179,35 @@ model train_book {
   @@index([teacher_id], map: "teacher_id_fk_idx")
   @@index([time_id], map: "time_id_fk_idx")
   @@index([train_period_id], map: "train_period_id_fk_idx")
+}
+
+model oldusers {
+  id          String  @id @db.VarChar(50)
+  name        String  @db.VarChar(100)
+  passwd      String  @db.VarChar(100)
+  gender      BigInt?
+  born        BigInt?
+  addr        String? @db.VarChar(255)
+  tel         String? @db.VarChar(20)
+  mobile      String? @db.VarChar(20)
+  source      String? @db.VarChar(16)
+  carType     BigInt?
+  trainScore  BigInt?
+  examScore   BigInt?
+  roadScore   BigInt?
+  memo        String? @db.VarChar(255)
+  trainId     BigInt?
+  createdAt   BigInt
+  updatedAt   BigInt
+  version     BigInt
+  stuNum      String? @db.VarChar(16)
+  trainTimeId String? @db.VarChar(16)
+  teacherId   String  @db.VarChar(16)
+  classType   String? @db.VarChar(16)
+  addrNum     String? @db.VarChar(16)
+  payment     BigInt?
+  payDate     BigInt?
+  seasonType  String? @db.VarChar(16)
+  yearType    BigInt?
+  tbId        String? @db.VarChar(36)
 }

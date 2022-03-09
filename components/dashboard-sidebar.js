@@ -27,42 +27,42 @@ import { WEBTITLE } from '../libs/front/constText';
 
 const items = [
 	{
-		href: '/',
+		href: '/admin',
 		icon: <ChartBarIcon fontSize='small' />,
 		title: '統計分析',
 	},
 	{
-		href: '/customers',
+		href: '/admin/customers',
 		icon: <UsersIcon fontSize='small' />,
 		title: '學員管理',
 	},
 	{
-		href: '/exams',
+		href: '/admin/exams',
 		icon: <MenuBookIcon fontSize='small' />,
 		title: '考題管理',
 	},
 	{
-		href: '/products',
+		href: '/admin/products',
 		icon: <DirectionsCarIcon fontSize='small' />,
 		title: '汽車管理',
 	},
 	{
-		href: '/account',
+		href: '/admin/account',
 		icon: <UserIcon fontSize='small' />,
 		title: '管理員管理',
 	},
 	{
-		href: '/settings',
+		href: '/admin/settings',
 		icon: <CogIcon fontSize='small' />,
 		title: '設定',
 	},
 	{
-		href: '/login',
+		href: '/admin/login',
 		icon: <LockIcon fontSize='small' />,
 		title: 'Login',
 	},
 	{
-		href: '/register',
+		href: '/admin/register',
 		icon: <UserAddIcon fontSize='small' />,
 		title: 'Register',
 	},

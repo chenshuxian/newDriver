@@ -100,10 +100,10 @@ const createUser = async function (data) {
 	return user;
 };
 
-const getUserById = async function (user_id) {
+const getUserById = async function (user_uuid) {
 	let user = await prisma.users.findUnique({
 		where: {
-			user_id,
+			user_uuid,
 		},
 	});
 
@@ -118,12 +118,12 @@ const getUserById = async function (user_id) {
 	return user;
 };
 
-const updateUser = async function (user_id, data) {
+const updateUser = async function (user_uuid, data) {
 	let user;
 	try {
 		user = await prisma.users.update({
 			where: {
-				user_id,
+				user_uuid,
 			},
 			data,
 		});
@@ -138,12 +138,12 @@ const updateUser = async function (user_id, data) {
 	return user;
 };
 
-const deleteUser = async function (user_id) {
+const deleteUser = async function (user_uuid) {
 	let user;
 	try {
 		user = await prisma.users.update({
 			where: {
-				user_id,
+				user_uuid,
 			},
 			data: {
 				is_delete: true,

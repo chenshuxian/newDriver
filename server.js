@@ -6,11 +6,12 @@ const fs = require('fs');
 const url = require('url');
 // var morgan = require('morgan');
 var path = require('path');
-
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+console.log(`port: ${process.env.PORT}`);
 
 const http = require('http');
 const https = require('https');
