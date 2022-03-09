@@ -2,7 +2,6 @@
 
 # dependencies
 /node_modules
-/__mocks__
 /static
 jspm_packages
 
