@@ -59,3 +59,4 @@ package-lock.json
 
 next.config copy.js
 drive.config.js
+libs/front/constText.js

@@ -178,6 +178,7 @@ export const CustomerListResults = ({ data }) => {
 
 	const columns = [
 		{ field: 'train_period_name', headerName: '期別' },
+		{ field: 'user_stu_num', headerName: '學號' },
 		{
 			field: 'teacher_id',
 			headerName: '教練',
