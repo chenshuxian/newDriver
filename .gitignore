@@ -56,7 +56,7 @@ build/Release
 
 # package lock
 package-lock.json
-
 next.config copy.js
 drive.config.js
+pages/admin/api-doc.js
 libs/front/constText.js
