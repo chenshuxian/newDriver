@@ -32,7 +32,6 @@ const Dashboard = () => (
 					<Grid item xl={3} lg={3} sm={6} xs={12}>
 						<TasksProgress />
 					</Grid>
-
 					<Grid item lg={8} md={12} xl={9} xs={12}>
 						<Sales />
 					</Grid>

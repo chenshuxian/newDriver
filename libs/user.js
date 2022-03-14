@@ -30,6 +30,28 @@ const getUser = async function (filter, pagination) {
 	return { user, total };
 };
 
+const getUserByCredentials = async function (user_id, user_password) {
+	let user;
+	try {
+		user = await prisma.users.findFirst({
+			where: {
+				user_id,
+				user_password,
+			},
+			select: {
+				user_id: true,
+				user_name: true,
+				create_time: true,
+				update_time: true,
+			},
+		});
+	} catch (e) {
+		return null;
+	}
+
+	return user;
+};
+
 const getStudentNum = async function (trainPeriodId) {
 	let stuNum;
 	let user_stu_name;
@@ -162,6 +184,7 @@ const deleteUser = async function (user_uuid) {
 
 export {
 	getUser,
+	getUserByCredentials,
 	getStudentNum,
 	createUser,
 	getUserById,
