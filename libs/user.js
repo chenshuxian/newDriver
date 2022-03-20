@@ -41,6 +41,7 @@ const getUserByCredentials = async function (user_id, user_password) {
 			select: {
 				user_id: true,
 				user_name: true,
+				user_email: true,
 				create_time: true,
 				update_time: true,
 			},
@@ -122,19 +123,15 @@ const createUser = async function (data) {
 	return user;
 };
 
-const getUserById = async function (user_uuid) {
+const getUserById = async function (user_id) {
 	let user = await prisma.users.findUnique({
 		where: {
-			user_uuid,
+			user_id,
 		},
 	});
 
 	if (!user) {
 		throw errorCode.NotFound;
-	}
-
-	if (user?.last_play_time) {
-		user.is_played = dayjs(user.last_play_time).isToday();
 	}
 
 	return user;

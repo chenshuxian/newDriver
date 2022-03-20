@@ -1,75 +1,79 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { getAdminUser, createAdminUser } from '../../../libs/adminUser';
+import { getScore, createScore } from '../../../libs/score';
 import errorCode from '../../../libs/errorCode';
-import { isAdmin } from '../../../libs/auth';
+import { isLogin, isAdmin } from '../../../libs/auth';
 
 /**
  * @swagger
  * tags:
- *   - name: adminUser
- *     description: The admin user
+ *   - name: score
+ *     description: The score
  *
  * definitions:
- *   adminUser:
+ *   score:
  *     type: object
  *     properties:
  *       id:
  *         type: string
- *         description: The admin user ID
- *         example: 4034bd78-17c8-4919-93d5-d0f547a0401b
- *       name:
+ *         description: The score ID
+ *         example: 11c2b4f5-c270-454e-a834-ae569a31dc54
+ *       score:
  *         type: string
- *         description: The admin user name
- *         example: admin
- *       password:
+ *         description: The score
+ *         example: 85
+ *       wrongQ:
  *         type: string
- *         description: The admin user password
- *         example: admin
+ *         description: The wrong answer
+ *         example: 11c2b4f5-c270-454e-a834-ae569a31dc54
+ *       exam_id:
+ *         type: string
+ *         description: The group number of exam
+ *         example: 10
+ *       user_id:
+ *         type: string
+ *         description: The id of user
+ *         example: W100382213
  *       create_time:
  *         type: string
  *         format: date-time
- *         description: The admin user created time
+ *         description: The time created time
  *         example: 2021-10-03T03:00:03.000Z
  *       update_time:
  *         type: string
  *         format: date-time
- *         description: The admin user updated time
+ *         description: The time updated time
  *         example: 2021-10-03T03:00:03.000Z
- *       is_delete:
- *         type: boolean
- *         description: Is the admin user deleted
- *         example: false
- *   adminUserList:
+ *   scoreList:
  *     type: object
  *     properties:
- *       adminUserList:
+ *       scoreList:
  *         type: array
  *         items:
- *           $ref: '#/definitions/adminUser'
+ *           $ref: '#/definitions/score'
  *       total:
  *         type: integer
  *         example: 1
  *
  * components:
  *   schemas:
- *     AdminUser:
- *       $ref: '#/definitions/adminUser'
+ *     score:
+ *       $ref: '#/definitions/score'
  *
- * /api/adminUser:
+ * /api/score:
  *   get:
  *     tags:
- *       - adminUser
- *     summary: Get a list of admin user
- *     description: Get a list of admin user
+ *       - score
+ *     summary: Get a list of score
+ *     description: Get a list of score
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: isDelete
+ *       - name: user_id
  *         in: query
- *         description: is delete
+ *         description: userId
  *         required: false
  *         schema:
- *           type: boolean
+ *           type: string
  *       - name: offset
  *         in: query
  *         description: offset
@@ -84,51 +88,51 @@ import { isAdmin } from '../../../libs/auth';
  *           type: integer
  *     responses:
  *       200:
- *         description: A list of admin user
+ *         description: A list of score
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/adminUserList'
+ *               $ref: '#/definitions/scoreList'
  *   post:
  *     tags:
- *       - adminUser
- *     summary: Create a admin user
- *     description: Create a new admin user
+ *       - score
+ *     summary: Create a score
+ *     description: Create a new score
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/definitions/adminUser'
+ *             $ref: '#/definitions/score'
  *     responses:
  *       201:
  *         description: Successful operation
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/adminUser'
+ *               $ref: '#/definitions/score'
  */
 export default async (req, res) => {
 	const {
-		query: { isDelete, offset, limit },
-		body: adminUserData,
+		query: { user_id, offset, limit },
+		body: scoreData,
 		method,
 	} = req;
 
-	// if (!(await isAdmin(req))) {
-	// 	res.status(401).json(errorCode.Unauthorized);
-	// 	return;
-	// }
-
-	let adminUser;
+	let score;
 	let total;
 	switch (method) {
 		case 'GET':
 			let filter;
 			let pagination;
 
-			if (isDelete !== undefined) {
-				filter['is_delete'] = isDelete === 'true' ? true : false;
+			// if (!await isLogin(req)) {
+			//   res.status(401).json(errorCode.Unauthorized);
+			//   return;
+			// }
+
+			if (user_id !== undefined) {
+				filter = { user_id };
 			}
 
 			if (offset || limit) {
@@ -136,33 +140,37 @@ export default async (req, res) => {
 			}
 
 			try {
-				({ adminUser, total } = await getAdminUser(filter, pagination));
+				({ score, total } = await getScore(filter, pagination));
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
 			}
 
-			if (adminUser) {
-				res.status(200).json({ adminUserList: adminUser, total });
+			if (score) {
+				res.status(200).json({ scoreList: score, total });
 				return;
 			}
 			break;
 		case 'POST':
-			if (!adminUserData) {
+			// if (!await isAdmin(req)) {
+			//   res.status(401).json(errorCode.Unauthorized);
+			//   return;
+			// }
+
+			if (!scoreData) {
 				res.status(400).json(errorCode.BadRequest);
 				return;
 			}
 
 			try {
-				adminUser = await createAdminUser(adminUserData);
+				score = await createScore(scoreData);
 			} catch (e) {
-				console.log(`add admin err: ${JSON.stringify(e)}`);
 				res.status(e.statusCode).json(e);
 				return;
 			}
 
-			if (adminUser) {
-				res.status(201).json(adminUser);
+			if (score) {
+				res.status(201).json(score);
 				return;
 			}
 			break;

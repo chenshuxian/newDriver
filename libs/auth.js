@@ -26,7 +26,7 @@ const isLogin = async function (req) {
 const getUserId = async function (req) {
 	const session = await getUserSession(req);
 
-	return session?.userId || '';
+	return session?.user.user_id || '';
 };
 
 const adminLogin = async function (credentials) {

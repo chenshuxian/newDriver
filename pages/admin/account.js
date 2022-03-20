@@ -32,3 +32,7 @@ const Account = () => (
 Account.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default Account;
+
+Account.auth = {
+	unauthorized: '/admin/login',
+};

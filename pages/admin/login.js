@@ -12,26 +12,39 @@ import {
 	TextField,
 	Typography,
 } from '@mui/material';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { Facebook as FacebookIcon } from '../../icons/facebook';
-import { Google as GoogleIcon } from '../../icons/google';
+
+import { signIn, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
 
 const Login = () => {
+	const { data: session } = useSession();
+
+	useEffect(() => {
+		console.log(`admin session: ${JSON.stringify(session)}`);
+		if (session?.user.isAdmin) {
+			router.push('/admin');
+		}
+	}, [session]);
+
 	const router = useRouter();
 	const formik = useFormik({
 		initialValues: {
-			email: 'demo@devias.io',
-			password: 'Password123',
+			name: '',
+			password: '',
 		},
 		validationSchema: Yup.object({
-			email: Yup.string()
-				.email('Must be a valid email')
-				.max(255)
-				.required('Email is required'),
+			name: Yup.string().max(255).required('name is required'),
 			password: Yup.string().max(255).required('Password is required'),
 		}),
 		onSubmit: () => {
-			router.push('/');
+			console.log(`form: ${JSON.stringify(formik.values)}`);
+			let data = formik.values;
+			data.redirect = false;
+			signIn('adminLogin', data)
+				.then((data) => {
+					console.log(`sigin data: ${JSON.stringify(data)}`);
+				})
+				.catch((e) => console.log(`signin err: ${e}`));
 		},
 	});
 
@@ -46,23 +59,23 @@ const Login = () => {
 					minHeight: '100%',
 				}}>
 				<Container maxWidth='sm'>
-					<NextLink href='/' passHref>
+					{/* <NextLink href='/' passHref>
 						<Button
 							component='a'
 							startIcon={<ArrowBackIcon fontSize='small' />}>
 							Dashboard
 						</Button>
-					</NextLink>
+					</NextLink> */}
 					<form onSubmit={formik.handleSubmit}>
 						<Box sx={{ my: 3 }}>
 							<Typography color='textPrimary' variant='h4'>
-								Sign in
+								登入
 							</Typography>
 							<Typography color='textSecondary' gutterBottom variant='body2'>
-								Sign in on the internal platform
+								駕訓班管理平台
 							</Typography>
 						</Box>
-						<Grid container spacing={3}>
+						{/* <Grid container spacing={3}>
 							<Grid item xs={12} md={6}>
 								<Button
 									color='info'
@@ -94,18 +107,17 @@ const Login = () => {
 							<Typography align='center' color='textSecondary' variant='body1'>
 								or login with email address
 							</Typography>
-						</Box>
+						</Box> */}
 						<TextField
-							error={Boolean(formik.touched.email && formik.errors.email)}
+							error={Boolean(formik.touched.name && formik.errors.name)}
 							fullWidth
-							helperText={formik.touched.email && formik.errors.email}
-							label='Email Address'
+							helperText={formik.touched.name && formik.errors.name}
+							label='帳號'
 							margin='normal'
-							name='email'
+							name='name'
 							onBlur={formik.handleBlur}
 							onChange={formik.handleChange}
-							type='email'
-							value={formik.values.email}
+							value={formik.values.name}
 							variant='outlined'
 						/>
 						<TextField
@@ -129,23 +141,9 @@ const Login = () => {
 								size='large'
 								type='submit'
 								variant='contained'>
-								Sign In Now
+								登入
 							</Button>
 						</Box>
-						<Typography color='textSecondary' variant='body2'>
-							Don&apos;t have an account?{' '}
-							<NextLink href='/register'>
-								<Link
-									to='/register'
-									variant='subtitle2'
-									underline='hover'
-									sx={{
-										cursor: 'pointer',
-									}}>
-									Sign Up
-								</Link>
-							</NextLink>
-						</Typography>
 					</form>
 				</Container>
 			</Box>

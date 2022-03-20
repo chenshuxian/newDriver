@@ -33,8 +33,6 @@ export async function getServerSideProps(context) {
 	const exam = await getExam(filter);
 	data.exam = JSON.stringify(exam.exam);
 
-	// console.log(`data.trainPeriodDetail==========${data.exam}`)
-
 	if (!data) {
 		return {
 			notFound: true,
@@ -47,3 +45,7 @@ export async function getServerSideProps(context) {
 }
 
 export default Exams;
+
+Exams.auth = {
+	unauthorized: '/admin/login',
+};

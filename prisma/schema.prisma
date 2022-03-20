@@ -16,7 +16,7 @@ model exam {
   exam_img_url String?  @db.VarChar(150)
   create_time  DateTime @default(now()) @db.Timestamp(0)
   update_time  DateTime @default(now()) @db.Timestamp(0)
-  is_delete    Int      @default(0) @db.TinyInt
+  is_delete    Boolean?    @default(false)
 }
 
 model fixStore {
@@ -58,17 +58,17 @@ model mCarDetail {
 }
 
 model score {
-  id        String  @id @db.VarChar(50)
-  studentId String  @db.VarChar(50)
-  score     String  @db.VarChar(10)
-  createdAt BigInt
-  wrongQ    String? @db.VarChar(200)
-  updatedAt BigInt
-  examId    BigInt?
+  id          String   @id @default(uuid()) @db.VarChar(50)
+  score       String   @db.VarChar(10)
+  wrongQ      String?  @db.VarChar(200)
+  exam_id     String?  @db.VarChar(11)
+  user_id     String   @db.VarChar(36)
+  create_time DateTime @default(now()) @db.Timestamp(0)
+  update_time DateTime @default(now()) @db.Timestamp(0)
 }
 
 model users {
-  user_uuid         String      @id @default(uuid()) @db.VarChar(36) 
+  user_uuid         String      @id @default(uuid()) @db.VarChar(36)
   user_id           String      @unique(map: "user_id_UNIQUE") @db.VarChar(36)
   user_name         String      @db.VarChar(100)
   user_stu_num      String?     @db.VarChar(16)
@@ -210,4 +210,13 @@ model oldusers {
   seasonType  String? @db.VarChar(16)
   yearType    BigInt?
   tbId        String? @db.VarChar(36)
+}
+
+model admin {
+  id          String    @id @default(uuid()) @db.VarChar(36)
+  name        String?   @db.VarChar(45)
+  password    String?   @db.Char(64)
+  create_time DateTime? @default(now()) @db.Timestamp(0)
+  update_time DateTime? @default(now()) @db.Timestamp(0)
+  is_delete   Boolean?  @default(false)
 }

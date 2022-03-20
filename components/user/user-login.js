@@ -1,12 +1,7 @@
-import { createTheme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
 import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
-import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -14,29 +9,8 @@ import TextField from '@mui/material/TextField';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import { WindowSharp } from '@mui/icons-material';
-import router from 'next/router';
-
-const defaultTheme = createTheme();
-const useStyles = makeStyles(
-	(theme) =>
-		createStyles({
-			section: {
-				display: 'flex',
-				justifyContent: 'center',
-				alignItems: 'center',
-				backgroundImage: '../../static/images/car/car4.jpg',
-				minHeight: '100vh',
-				backgroundPosition: 'center',
-				backgroundRepeat: 'no-repeat',
-				backgroundSize: 'cover',
-			},
-		}),
-	{ defaultTheme }
-);
 
 const UserLogin = () => {
-	const classes = useStyles();
 	const [values, setValues] = React.useState({
 		user_id: '',
 		user_password: '',
@@ -59,15 +33,30 @@ const UserLogin = () => {
 
 	const submitData = async () => {
 		let data = {
-			callbackUrl: 'http://localhost:3000/exam',
+			redirect: false,
 			username: values.user_id,
 			password: values.user_password,
 		};
-		signIn('credentials', data);
+		signIn('credentials', data)
+			.then((data) => {
+				console.log(`sigin data: ${JSON.stringify(data)}`);
+			})
+			.catch((e) => console.log(`signin err: ${e}`));
 	};
 
 	return (
-		<section className={classes.section}>
+		<Box
+			component='section'
+			sx={{
+				display: 'flex',
+				justifyContent: 'center',
+				alignItems: 'center',
+				backgroundImage: 'url(../../static/images/car/car4.jpg)',
+				minHeight: '100vh',
+				backgroundPosition: 'center',
+				backgroundRepeat: 'no-repeat',
+				backgroundSize: 'cover',
+			}}>
 			<Grid
 				container
 				spacing={2}
@@ -121,7 +110,7 @@ const UserLogin = () => {
 								</InputAdornment>
 							),
 						}}
-						label='Password'
+						label='出生年月日'
 						fullWidth
 					/>
 				</Grid>
@@ -131,7 +120,7 @@ const UserLogin = () => {
 					</Button>
 				</Grid>
 			</Grid>
-		</section>
+		</Box>
 	);
 };
 export default UserLogin;

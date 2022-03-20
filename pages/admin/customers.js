@@ -93,3 +93,7 @@ export async function getStaticProps(context) {
 }
 
 export default Customers;
+
+Customers.auth = {
+	unauthorized: '/admin/login',
+};

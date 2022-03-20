@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { DashboardNavbar } from './dashboard-navbar';
 import { DashboardSidebar } from './dashboard-sidebar';
+import { useSession } from 'next-auth/react';
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
 	display: 'flex',
@@ -17,6 +18,8 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
 export const DashboardLayout = (props) => {
 	const { children } = props;
 	const [isSidebarOpen, setSidebarOpen] = useState(true);
+	const { data: session, status } = useSession();
+	const userName = session?.user.name;
 
 	return (
 		<>
@@ -31,7 +34,10 @@ export const DashboardLayout = (props) => {
 					{children}
 				</Box>
 			</DashboardLayoutRoot>
-			<DashboardNavbar onSidebarOpen={() => setSidebarOpen(true)} />
+			<DashboardNavbar
+				userName={userName}
+				onSidebarOpen={() => setSidebarOpen(true)}
+			/>
 			<DashboardSidebar
 				onClose={() => setSidebarOpen(false)}
 				open={isSidebarOpen}

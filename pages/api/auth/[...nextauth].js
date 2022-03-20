@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { createUser, getUserById } from '../../../libs/user';
-import { userLogin } from '../../../libs/auth';
+import { userLogin, adminLogin } from '../../../libs/auth';
 import errorCode from '../../../libs/errorCode';
 import { getAdminUserById } from '../../../libs/adminUser';
 
@@ -10,16 +10,82 @@ import { getAdminUserById } from '../../../libs/adminUser';
 export default NextAuth({
 	// https://next-auth.js.org/configuration/providers
 	providers: [
+		// Providers.Email({
+		//   server: process.env.EMAIL_SERVER,
+		//   from: process.env.EMAIL_FROM,
+		// }),
+		// Temporarily removing the Apple provider from the demo site as the
+		// callback URL for it needs updating due to Vercel changing domains
+		/*
+    Providers.Apple({
+      clientId: process.env.APPLE_ID,
+      clientSecret: {
+        appleId: process.env.APPLE_ID,
+        teamId: process.env.APPLE_TEAM_ID,
+        privateKey: process.env.APPLE_PRIVATE_KEY,
+        keyId: process.env.APPLE_KEY_ID,
+      },
+    }),
+    */
+		// Providers.Facebook({
+		//   clientId: process.env.FACEBOOK_ID,
+		//   clientSecret: process.env.FACEBOOK_SECRET,
+		//   profile(profile) {
+		//     return {
+		//       id: profile.id,
+		//       name: profile.name,
+		//       email: profile.email,
+		//       image: profile.picture.data.url,
+		//     }
+		//   },
+		// }),
 		CredentialsProvider({
 			credentials: {
 				username: { label: 'Username', type: 'text', placeholder: 'Username' },
 				password: { label: 'password', type: 'text', placeholder: 'Password' },
 			},
 			async authorize(credentials) {
-				const user = await userLogin(credentials);
+				const data = await userLogin(credentials);
+				// console.log(`credentials: ${data.user_id}`);
+				const user = {
+					id: data.user_id,
+					name: data.user_name,
+					email: data.user_email,
+				};
 				return user;
 			},
 		}),
+		CredentialsProvider({
+			id: 'adminLogin',
+			async authorize(credentials) {
+				const data = await adminLogin(credentials);
+				console.log(`credentials: ${JSON.stringify(data)}`);
+				const user = {
+					id: data.id,
+					name: data.name,
+				};
+				return user;
+			},
+		}),
+		// Providers.GitHub({
+		//   clientId: process.env.GITHUB_ID,
+		//   clientSecret: process.env.GITHUB_SECRET,
+		//   // https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+		//   scope: "read:user"
+		// }),
+		// Providers.Google({
+		//   clientId: process.env.GOOGLE_ID,
+		//   clientSecret: process.env.GOOGLE_SECRET,
+		// }),
+		// Providers.Twitter({
+		//   clientId: process.env.TWITTER_ID,
+		//   clientSecret: process.env.TWITTER_SECRET,
+		// }),
+		// Providers.Auth0({
+		//   clientId: process.env.AUTH0_ID,
+		//   clientSecret: process.env.AUTH0_SECRET,
+		//   domain: process.env.AUTH0_DOMAIN,
+		// }),
 	],
 	// Database optional. MySQL, Maria DB, Postgres and MongoDB are supported.
 	// https://next-auth.js.org/configuration/databases
@@ -41,12 +107,12 @@ export default NextAuth({
 		jwt: true,
 
 		// Seconds - How long until an idle session expires and is no longer valid.
-		maxAge: 30 * 24 * 60 * 60, // 30 days
+		// maxAge: 30 * 24 * 60 * 60, // 30 days
 
 		// Seconds - Throttle how frequently to write to database to extend a session.
 		// Use it to limit write operations. Set to 0 to always update the database.
 		// Note: This option is ignored if using JSON Web Tokens
-		updateAge: 24 * 60 * 60, // 24 hours
+		// updateAge: 24 * 60 * 60, // 24 hours
 	},
 
 	// JSON Web tokens are only used for sessions if the `jwt: true` session
@@ -80,36 +146,37 @@ export default NextAuth({
 	// when an action is performed.
 	// https://next-auth.js.org/configuration/callbacks
 	callbacks: {
-		async signIn({ user, account, profile, email, credentials }) {
-			return true;
+		async signIn(user, account, profile, email, credentials) {
+			let registeredUser;
+			//console.log(`user Sign ${JSON.stringify(user)} `);
+			if (user.account.type == 'credentials') {
+				//console.log(`return user: ${JSON.stringify(user.user)}`);
+				return user.user;
+			}
 		},
-		// async jwt(token, account) {
-		// 	// Persist the OAuth access_token to the token right after signin
-		// 	if (account) {
-		// 		token.accessToken = account.access_token;
-		// 	}
-		// 	return token;
-		// },
+		async jwt({ token, account, user }) {
+			// Persist the OAuth access_token to the token right after signin
+			return token;
+		},
 		async session({ session, token, user }) {
 			// Send properties to the client, like an access_token from a provider.
-			console.log(`session: ${JSON.stringify(token)}`);
-			//session.accessToken = token.accessToken;
+			let registeredUser;
+			try {
+				registeredUser = await getAdminUserById(token.sub);
+				if (registeredUser) {
+					console.log(`admin`);
+					session.user.isAdmin = true;
+				}
+			} catch (e) {}
+
+			session.user.user_id = token.sub;
 			return session;
 		},
 	},
 
 	// Events are useful for logging
 	// https://next-auth.js.org/configuration/events
-	events: {
-		async signIn(message) {
-			/* on successful sign in */
-			console.log(`event sign in : ${JSON.stringify(user)}`);
-		},
-		async session(message) {
-			/* session is active */
-			console.log(`session sign in : ${JSON.stringify(message)}`);
-		},
-	},
+	events: {},
 
 	// You can set the theme to 'light', 'dark' or use 'auto' to default to the
 	// whatever prefers-color-scheme is set to in the browser. Default is 'auto'

@@ -1,5 +1,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { checkAnswer, getExamTypeId } from '../../../libs/exam';
+import { createScore } from '../../../libs/score';
 import errorCode from '../../../libs/errorCode';
 import { isLogin, getUserId } from '../../../libs/auth';
 import { getUserById, updateUser } from '../../../libs/user';
@@ -93,16 +94,14 @@ export default async (req, res) => {
 		return;
 	}
 
-	let ticket;
 	switch (method) {
 		case 'POST':
 			let examAnsErr;
 			let score;
-			let isPass = false;
-			let isQuotaExceeded = false;
 			let userId;
 			let user;
-			let ticketId;
+			let examNum;
+			let scoreData;
 
 			if (!answerData || typeof answerData !== 'object') {
 				res.status(400).json(errorCode.BadRequest);
@@ -110,7 +109,6 @@ export default async (req, res) => {
 			}
 
 			userId = await getUserId(req);
-			//console.log(`authID: ${userId}`)
 
 			try {
 				user = await getUserById(userId);
@@ -122,30 +120,37 @@ export default async (req, res) => {
 				}
 			}
 
-			isQuotaExceeded = !user.is_shared && user.is_played;
-
-			if (isQuotaExceeded) {
-				res.status(400).json(errorCode.QuotaExceeded);
-				return;
-			}
-
 			try {
 				examAnsErr = await checkAnswer(answerData);
 				if (examAnsErr) {
-					score = (Object.keys(answerData).length - examAnsErr.length) * 10;
+					score = (Object.keys(answerData).length - examAnsErr.length) * 2.5;
 					examAnsErr = examAnsErr.map((exam) => {
+						let exam_ans = exam.exam_option.split(';');
+						examNum = exam.exam_number;
 						return {
+							exam_id: exam.exam_id,
 							exam_title: exam.exam_title,
-							exam_ans: exam.exam_option[exam.exam_ans - 1],
-							exam_ans_err: exam.exam_option[answerData[exam.exam_id] - 1],
+							exam_ans: exam_ans[exam.exam_ans - 1],
+							exam_ans_err: exam_ans[answerData[exam.exam_id] - 1],
 						};
 					});
 				} else {
 					score = 100;
 				}
-
-				isPass = score >= passScore;
 			} catch (e) {
+				res.status(e.statusCode).json(e);
+				return;
+			}
+
+			try {
+				scoreData = {
+					score: score.toString(),
+					user_id: userId,
+					exam_id: examNum,
+				};
+				await createScore(scoreData);
+			} catch (e) {
+				console.log(`createScoer err: ${e}`);
 				res.status(e.statusCode).json(e);
 				return;
 			}

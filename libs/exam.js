@@ -1,288 +1,300 @@
 import prisma from './prisma';
 import errorCode from './errorCode';
+import { collapseClasses } from '@mui/material';
 
-const getExam = async function(filter, pagination) {
-  let exam;
-  let total;
-  let prismaArgs = {};
-  
-  if (filter) {
-    prismaArgs['where'] = filter;
-  }
+const getExam = async function (filter, pagination) {
+	let exam;
+	let total;
+	let prismaArgs = {};
 
-  if (pagination) {
-    prismaArgs['skip'] = parseInt(pagination.offset) || 0;
-    prismaArgs['take'] = parseInt(pagination.limit) || 50;
-  }
+	if (filter) {
+		prismaArgs['where'] = filter;
+	}
 
-    prismaArgs['orderBy'] = { exam_number: 'asc'}
+	if (pagination) {
+		prismaArgs['skip'] = parseInt(pagination.offset) || 0;
+		prismaArgs['take'] = parseInt(pagination.limit) || 50;
+	}
 
-  total = await getExamCount(filter);
-  if (!total) {
-    throw errorCode.NotFound;
-  }
+	prismaArgs['orderBy'] = { exam_number: 'asc' };
 
-  exam = await prisma.exam.findMany(prismaArgs);
+	total = await getExamCount(filter);
+	if (!total) {
+		throw errorCode.NotFound;
+	}
 
-  return { exam, total };
-}
+	exam = await prisma.exam.findMany(prismaArgs);
 
-const getExamById = async function(id) {
-  let exam = await prisma.exam.findUnique({
-    where: {
-      exam_id: id
-    }
-  });
+	return { exam, total };
+};
 
-  if (!exam) {
-    throw errorCode.NotFound;
-  }
+const getExamById = async function (id) {
+	let exam = await prisma.exam.findUnique({
+		where: {
+			exam_id: id,
+		},
+	});
 
-  return exam;
-}
+	if (!exam) {
+		throw errorCode.NotFound;
+	}
 
-const getExamCount = async function(filter) {
-  let count;
-  let prismaArgs = {};
+	return exam;
+};
 
-  prismaArgs['_count'] = { exam_id: true };
-  if (filter) {
-    prismaArgs['where'] = filter;
-  }
+const getExamCount = async function (filter) {
+	let count;
+	let prismaArgs = {};
 
-  count = await prisma.exam.aggregate(prismaArgs);
+	prismaArgs['_count'] = { exam_id: true };
+	if (filter) {
+		prismaArgs['where'] = filter;
+	}
 
-  if (count) {
-    return count._count.exam_id;
-  }
+	count = await prisma.exam.aggregate(prismaArgs);
 
-  return 0;
-}
+	if (count) {
+		return count._count.exam_id;
+	}
 
-const getExamUnDeletedCount = async function(filter) {
-  let count;
-  let prismaArgs = {};
+	return 0;
+};
 
-  if (filter) {
-    prismaArgs['where'] = Object.assign({ is_delete: false }, filter);
-  }
+const getExamUnDeletedCount = async function (filter) {
+	let count;
+	let prismaArgs = {};
 
-  count = await getExamCount(filter);
+	if (filter) {
+		prismaArgs['where'] = Object.assign({ is_delete: false }, filter);
+	}
 
-  return count;
-}
+	count = await getExamCount(filter);
 
-const createExam = async function(data) {
-  let exam;
+	return count;
+};
 
-  try {
-    exam = await prisma.exam.create({
-      data
-    });
-  } catch (e) {
-    console.log(e)
-    throw errorCode.InternalServerError;
-  }
+const createExam = async function (data) {
+	let exam;
 
-  return exam;
-}
+	try {
+		exam = await prisma.exam.create({
+			data,
+		});
+	} catch (e) {
+		console.log(e);
+		throw errorCode.InternalServerError;
+	}
 
-const updateExam = async function(examId, data) {
-  let exam;
+	return exam;
+};
 
-  try {
-    exam = await prisma.exam.update({
-      where: {
-        exam_id: examId
-      },
-      data
-    })
-  } catch (e) {
-    if (e.code === "P2025") {
-      throw errorCode.NotFound;
-    }
-    throw errorCode.InternalServerError;
-  }
+const updateExam = async function (examId, data) {
+	let exam;
 
-  return exam;
-}
+	try {
+		exam = await prisma.exam.update({
+			where: {
+				exam_id: examId,
+			},
+			data,
+		});
+	} catch (e) {
+		if (e.code === 'P2025') {
+			throw errorCode.NotFound;
+		}
+		throw errorCode.InternalServerError;
+	}
 
-const deleteExam = async function(examId, isDelete = false) {
-  let exam;
+	return exam;
+};
 
-  try {
-    if (isDelete) {
-      if (Array.isArray(examId)) {
-        exam = await prisma.exam.deleteMany({
-          where: {
-            exam_id: { in: examId }
-          }
-        });
-      } else {
-        exam = await prisma.exam.delete({
-          where: {
-            exam_id: examId
-          }
-        });
-      }
-    } else {
-      if (Array.isArray(examId)) {
-        exam = await prisma.exam.updateMany({
-          where: {
-            exam_id: { in: examId }
-          },
-          data: {
-            is_delete: true
-          }
-        });
-      } else {
-        exam = await prisma.exam.update({
-          where: {
-            exam_id: examId
-          },
-          data: {
-            is_delete: true
-          }
-        });
-      }
-    }
-  } catch (e) {
-    console.log(`exam delete err: ${e}`)
-    if (e.code === "P2025") {
-      throw errorCode.NotFound;
-    }
-    throw errorCode.InternalServerError;
-  }
+const deleteExam = async function (examId, isDelete = false) {
+	let exam;
 
-  return exam;
-}
+	try {
+		if (isDelete) {
+			if (Array.isArray(examId)) {
+				exam = await prisma.exam.deleteMany({
+					where: {
+						exam_id: { in: examId },
+					},
+				});
+			} else {
+				exam = await prisma.exam.delete({
+					where: {
+						exam_id: examId,
+					},
+				});
+			}
+		} else {
+			if (Array.isArray(examId)) {
+				exam = await prisma.exam.updateMany({
+					where: {
+						exam_id: { in: examId },
+					},
+					data: {
+						is_delete: true,
+					},
+				});
+			} else {
+				exam = await prisma.exam.update({
+					where: {
+						exam_id: examId,
+					},
+					data: {
+						is_delete: true,
+					},
+				});
+			}
+		}
+	} catch (e) {
+		console.log(`exam delete err: ${e}`);
+		if (e.code === 'P2025') {
+			throw errorCode.NotFound;
+		}
+		throw errorCode.InternalServerError;
+	}
 
-const getExamRandom = async function(filter, count = 10) {
-  let exam;
-  let examTotal, maxOffset, offset;
-  let prismaArgs = {};
+	return exam;
+};
 
-  if (filter) {
-    prismaArgs['where'] = filter;
-  }
+const getExamRandom = async function (id) {
+	let exam, exam_number, examSql, del;
 
-  examTotal = await getExamUnDeletedCount(filter);
-  maxOffset = examTotal - count + 1;
-  maxOffset = maxOffset > 0 ? maxOffset : 0;
-  offset = parseInt(Math.random()*maxOffset);
+	let examIdSql = `select exam_number from exam 
+	where exam_number not in 
+	(SELECT exam_id FROM score where user_id = '${id}') 
+	group by exam_number order by rand() limit 1`;
 
-  prismaArgs['skip'] = offset;
-  prismaArgs['take'] = parseInt(count);
+	exam_number = await prisma.$queryRawUnsafe(`${examIdSql}`);
+	if (exam_number.length > 0) {
+		examSql = `select * from exam where exam_number = ${exam_number[0]['exam_number']} `;
+		exam = await prisma.$queryRawUnsafe(`${examSql}`);
+	} else {
+		let delSql = `Delete from score where user_id = '${id}'`;
+		del = await prisma.$queryRawUnsafe(`${delSql}`);
+		examSql = `select * from exam where exam_number = '1' `;
+		exam = await prisma.$queryRawUnsafe(`${examSql}`);
+	}
 
-  exam = await prisma.exam.findMany(prismaArgs);
+	return exam;
+};
 
-  if (!exam) {
-    throw errorCode.NotFound;
-  }
+const checkAnswer = async function (answerData) {
+	let exam;
+	let prismaArgs = {};
 
-  return exam;
-}
+	if (!answerData || typeof answerData !== 'object') {
+		return 0;
+	}
 
-const checkAnswer = async function(answerData) {
-  let exam;
-  let prismaArgs = {};
+	prismaArgs['where'] = {
+		OR: Object.entries(answerData).map(([exam_id, exam_ans]) => {
+			return {
+				AND: [{ exam_id, exam_ans: { not: exam_ans } }],
+			};
+		}),
+	};
 
-  if (!answerData || typeof answerData !== 'object') {
-    return 0;
-  }
+	// console.log(`where: ${JSON.stringify(prismaArgs)}`);
+	try {
+		exam = await prisma.exam.findMany(prismaArgs);
+	} catch (e) {
+		console.log(`ans err: ${e}`);
+	}
 
-  prismaArgs['where'] = {
-    OR: Object.entries(answerData).map(([exam_id, exam_ans]) => {
-      return {
-        AND: [{ exam_id, exam_ans: { not: exam_ans } }]
-      }
-    })
-  };
+	return exam || {};
+};
 
-  exam = await prisma.exam.findMany(prismaArgs);
+const getExamTypeId = async function (id) {
+	let exam = await getExamById(id);
 
-  return exam || {};
-}
+	return exam?.exam_type_id || '';
+};
 
-const getExamTypeId = async function(id) {
-  let exam = await getExamById(id);
+const importExam = async function (records, { examTypeId }) {
+	let data;
+	let count;
+	const fieldMapping = {
+		exam_title: 1,
+		exam_option: [3, 4, 5, 6],
+		exam_ans: 2,
+		exam_img_url: 7,
+		exam_video_url: 8,
+	};
+	const headerMapping = {
+		題目: 'exam_title',
+		答案: 'exam_ans',
+		照片: 'exam_img_url',
+		影片: 'exam_video_url',
+		選項1: ['exam_option', 0],
+		選項2: ['exam_option', 1],
+		選項3: ['exam_option', 2],
+		選項4: ['exam_option', 3],
+	};
 
-  return exam?.exam_type_id || '';
-}
+	if (!Array.isArray(records)) {
+		throw errorCode.BadRequest;
+	}
 
-const importExam = async function(records, { examTypeId }) {
-  let data;
-  let count;
-  const fieldMapping = {
-    exam_title: 1,
-    exam_option: [3, 4, 5, 6],
-    exam_ans: 2,
-    exam_img_url: 7,
-    exam_video_url: 8
-  };
-  const headerMapping = {
-    '題目': 'exam_title',
-    '答案': 'exam_ans',
-    '照片': 'exam_img_url',
-    '影片': 'exam_video_url',
-    '選項1': [ 'exam_option', 0 ],
-    '選項2': [ 'exam_option', 1 ],
-    '選項3': [ 'exam_option', 2 ],
-    '選項4': [ 'exam_option', 3 ]
-  }
+	let header = records[0];
+	let index = header.indexOf('題目');
+	if ((index = header.indexOf('題目')) !== -1) {
+		records.shift();
 
-  if (!Array.isArray(records)) {
-    throw errorCode.BadRequest;
-  }
+		Object.entries(headerMapping).forEach(([headerValue, fieldKey]) => {
+			if ((index = header.indexOf(headerValue))) {
+				if (Array.isArray(fieldKey)) {
+					fieldMapping[fieldKey[0]][fieldKey[1]] = index;
+				} else {
+					fieldMapping[fieldKey] = index;
+				}
+			}
+		});
+	}
 
-  let header = records[0];
-  let index = header.indexOf('題目');
-  if ((index = header.indexOf('題目')) !== -1) {
-    records.shift();
+	data = records.map((exam) => {
+		let record = { exam_type_id: examTypeId };
 
-    Object.entries(headerMapping).forEach(([headerValue, fieldKey]) => {
-      if ((index = header.indexOf(headerValue))) {
-        if (Array.isArray(fieldKey)) {
-          fieldMapping[fieldKey[0]][fieldKey[1]] = index;
-        } else {
-          fieldMapping[fieldKey] = index;
-        }
-      }
-    });
-  }
+		Object.entries(fieldMapping).forEach(([key, index]) => {
+			if (index === -1) {
+				return;
+			}
 
-  data = records.map((exam) => {
-    let record = { exam_type_id: examTypeId };
+			if (Array.isArray(index)) {
+				record[key] = [];
+				index.forEach((examIndex, optionIndex) => {
+					record[key][optionIndex] = exam[examIndex];
+				});
+			} else {
+				record[key] = exam[index];
+			}
+		});
 
-    Object.entries(fieldMapping).forEach(([key, index]) => {
-      if (index === -1) {
-        return;
-      }
+		record.exam_ans = parseInt(record.exam_ans);
 
-      if (Array.isArray(index)) {
-        record[key] = [];
-        index.forEach((examIndex, optionIndex) => {
-          record[key][optionIndex] = exam[examIndex];
-        });
-      } else {
-        record[key] = exam[index];
-      }
-    });
+		return record;
+	});
 
-    record.exam_ans = parseInt(record.exam_ans);
+	try {
+		({ count } = await prisma.exam.createMany({
+			data,
+		}));
+	} catch (e) {
+		throw errorCode.InternalServerError;
+	}
 
-    return record;
-  });
+	return { data, count };
+};
 
-  try {
-    ({ count } = await prisma.exam.createMany({
-      data
-    }));
-  } catch (e) {
-    throw errorCode.InternalServerError;
-  }
-
-  return { data, count };
-}
-
-export { getExam, createExam, updateExam, deleteExam, getExamRandom, checkAnswer, getExamTypeId, getExamById, importExam };
+export {
+	getExam,
+	createExam,
+	updateExam,
+	deleteExam,
+	getExamRandom,
+	checkAnswer,
+	getExamTypeId,
+	getExamById,
+	importExam,
+};
