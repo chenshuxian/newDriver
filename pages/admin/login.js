@@ -3,6 +3,7 @@ import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import Snackbar from '@mui/material/Snackbar';
 import {
 	Box,
 	Button,
@@ -14,13 +15,23 @@ import {
 } from '@mui/material';
 
 import { signIn, useSession } from 'next-auth/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const Login = () => {
 	const { data: session } = useSession();
+	const [state, setState] = useState({
+		open: false,
+		vertical: 'top',
+		horizontal: 'center',
+	});
+	const [error, setError] = useState();
+	const { vertical, horizontal, open } = state;
+	const handleClose = () => {
+		setState({ ...state, open: false });
+	};
 
 	useEffect(() => {
-		console.log(`admin session: ${JSON.stringify(session)}`);
+		// console.log(`admin session: ${JSON.stringify(session)}`);
 		if (session?.user.isAdmin) {
 			router.push('/admin');
 		}
@@ -43,6 +54,10 @@ const Login = () => {
 			signIn('adminLogin', data)
 				.then((data) => {
 					console.log(`sigin data: ${JSON.stringify(data)}`);
+					if (data.error) {
+						setError('帳號密碼錯誤');
+						setState({ ...state, open: true });
+					}
 				})
 				.catch((e) => console.log(`signin err: ${e}`));
 		},
@@ -59,13 +74,6 @@ const Login = () => {
 					minHeight: '100%',
 				}}>
 				<Container maxWidth='sm'>
-					{/* <NextLink href='/' passHref>
-						<Button
-							component='a'
-							startIcon={<ArrowBackIcon fontSize='small' />}>
-							Dashboard
-						</Button>
-					</NextLink> */}
 					<form onSubmit={formik.handleSubmit}>
 						<Box sx={{ my: 3 }}>
 							<Typography color='textPrimary' variant='h4'>
@@ -75,39 +83,7 @@ const Login = () => {
 								駕訓班管理平台
 							</Typography>
 						</Box>
-						{/* <Grid container spacing={3}>
-							<Grid item xs={12} md={6}>
-								<Button
-									color='info'
-									fullWidth
-									startIcon={<FacebookIcon />}
-									onClick={formik.handleSubmit}
-									size='large'
-									variant='contained'>
-									Login with Facebook
-								</Button>
-							</Grid>
-							<Grid item xs={12} md={6}>
-								<Button
-									fullWidth
-									color='error'
-									startIcon={<GoogleIcon />}
-									onClick={formik.handleSubmit}
-									size='large'
-									variant='contained'>
-									Login with Google
-								</Button>
-							</Grid>
-						</Grid>
-						<Box
-							sx={{
-								pb: 1,
-								pt: 3,
-							}}>
-							<Typography align='center' color='textSecondary' variant='body1'>
-								or login with email address
-							</Typography>
-						</Box> */}
+
 						<TextField
 							error={Boolean(formik.touched.name && formik.errors.name)}
 							fullWidth
@@ -136,7 +112,6 @@ const Login = () => {
 						<Box sx={{ py: 2 }}>
 							<Button
 								color='primary'
-								disabled={formik.isSubmitting}
 								fullWidth
 								size='large'
 								type='submit'
@@ -144,6 +119,15 @@ const Login = () => {
 								登入
 							</Button>
 						</Box>
+						<div>
+							<Snackbar
+								anchorOrigin={{ vertical, horizontal }}
+								open={open}
+								onClose={handleClose}
+								message={error}
+								key={vertical + horizontal}
+							/>
+						</div>
 					</form>
 				</Container>
 			</Box>
