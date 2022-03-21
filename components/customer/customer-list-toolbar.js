@@ -73,7 +73,7 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 						startIcon={<CloudDownloadIcon fontSize='small' />}
 						sx={{ mr: 1 }}
 						onClick={() =>
-							(window.location.href = `/${trainPeriod[period]}.zip`)
+							(window.location.href = `/download/${trainPeriod[period]}.zip`)
 						}
 						disabled={disabled}>
 						{BUTTON_TWO}
