@@ -159,7 +159,7 @@ const deleteExam = async function (examId, isDelete = false) {
 };
 
 const getExamRandom = async function (id) {
-	let exam, exam_number, examSql, del;
+	let exam, exam_number, examSql, del, num;
 
 	let examIdSql = `select exam_number from exam 
 	where exam_number not in 
@@ -167,8 +167,9 @@ const getExamRandom = async function (id) {
 	group by exam_number order by rand() limit 1`;
 
 	exam_number = await prisma.$queryRawUnsafe(`${examIdSql}`);
+	num = exam_number[0]['exam_number'];
 	if (exam_number.length > 0) {
-		examSql = `select * from exam where exam_number = ${exam_number[0]['exam_number']} `;
+		examSql = `select * from exam where exam_number = '1' `;
 		exam = await prisma.$queryRawUnsafe(`${examSql}`);
 	} else {
 		let delSql = `Delete from score where user_id = '${id}'`;

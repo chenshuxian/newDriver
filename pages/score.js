@@ -22,14 +22,29 @@ const Score = () => {
 	}, []);
 
 	const cols = [
-		{ field: 'exam_id', headerName: 'id' },
+		{ field: 'exam_id', headerName: 'id', hide: true },
 		{
 			field: 'exam_title',
 			headerName: '題目',
 			width: 700,
 		},
-		{ field: 'exam_ans', headerName: '正確答案', width: 300 },
-		{ field: 'exam_ans_err', headerName: '錯誤答案', width: 300 },
+		{
+			field: 'exam_img_url',
+			headerName: '圖片',
+			width: 120,
+			renderCell: (params) => {
+				if (params.value.includes('static')) {
+					return (
+						<div>
+							<img style={{ width: 100, height: 80 }} src={params.value}></img>
+						</div>
+					);
+				}
+				return null;
+			},
+		},
+		{ field: 'exam_ans', headerName: '正確答案', width: 200 },
+		{ field: 'exam_ans_err', headerName: '錯誤答案', width: 200 },
 	];
 	return (
 		<>
@@ -63,11 +78,7 @@ const Score = () => {
 							columns={cols}
 							rows={ansList}
 							getRowId={(r) => r.exam_id}
-							withBorder
-							columnVisibilityModel={{
-								// Hide columns status and traderName, the other columns will remain visible
-								exam_id: false,
-							}}
+							rowHeight={100}
 						/>
 					</div>
 				</div>

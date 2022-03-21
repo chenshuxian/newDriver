@@ -42,7 +42,7 @@ app.prepare().then(() => {
 	// // setup the logger
 	// app.use(morgan('combined', { stream: accessLogStream }));
 	// create static server
-	app.use(express.static(path.join(__dirname + '/static/download')));
+	app.use(express.static(path.join(__dirname + '/static')));
 
 	app.all('*', async (req, res) => {
 		return handle(req, res);

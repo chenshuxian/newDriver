@@ -130,6 +130,7 @@ export default async (req, res) => {
 						return {
 							exam_id: exam.exam_id,
 							exam_title: exam.exam_title,
+							exam_img_url: exam.exam_img_url,
 							exam_ans: exam_ans[exam.exam_ans - 1],
 							exam_ans_err: exam_ans[answerData[exam.exam_id] - 1],
 						};

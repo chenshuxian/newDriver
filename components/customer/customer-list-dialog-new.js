@@ -241,8 +241,10 @@ export default function NewFormDialog(props) {
 		// 取得過濾後UI數據
 		const getUIData = (data) => {
 			data.teacher_id = teacher_id;
-			data.train_period_name =
-				trainPeriodDetail[`${train_period_id}`].train_period_name;
+			if (trainPeriodDetail[`${train_period_id}`]) {
+				data.train_period_name =
+					trainPeriodDetail[`${train_period_id}`]?.train_period_name;
+			}
 			data.train_period_id = train_period_id;
 			data.time_id = time_id;
 			data.train_period_start = train_period_start;
@@ -294,6 +296,7 @@ export default function NewFormDialog(props) {
 				setRows((prevRows) => {
 					let data = result.data;
 					const rowToUpdateIndex = data.user_uuid;
+
 					data = getUIData(data);
 					return prevRows.map((row, index) => {
 						// console.log(`${row.user_id} vs ${rowToUpdateIndex}`)
@@ -303,7 +306,7 @@ export default function NewFormDialog(props) {
 					});
 				});
 				handleClose();
-				window.alert('修改完成');
+				// window.alert('修改完成');
 			}
 		}
 		//JSON.stringify(values, 0, 2)
