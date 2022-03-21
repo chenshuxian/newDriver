@@ -75,7 +75,7 @@ function Auth({ children, url }) {
 		}
 
 		if (pathName.includes('admin') && !isAdmin) {
-			router.push('/');
+			router.push('/admin');
 		}
 	}, [isUser, status]);
 
