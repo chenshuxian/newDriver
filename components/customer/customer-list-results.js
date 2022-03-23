@@ -188,6 +188,8 @@ export const CustomerListResults = ({ data }) => {
 		},
 		{ field: 'user_id', headerName: '身份證' },
 		{ field: 'user_name', headerName: '姓名' },
+		{ field: 'score', headerName: '考試成績' },
+		{ field: 'last_play_time', headerName: '考試時間' },
 		{
 			field: 'user_gender',
 			headerName: '性別',
@@ -196,14 +198,7 @@ export const CustomerListResults = ({ data }) => {
 				return params.value == '1' ? '男' : '女';
 			},
 		},
-		// { field: 'user_born', headerName: '出生年月',
-		//   valueFormatter: (params) => {
-		//     if(params.value){
-		//       return params.value.substr(0,10)
-		//     }
-		//     return ''
-		//   }
-		// },
+
 		{ field: 'user_addr', headerName: '地址', width: 300 },
 		{ field: 'user_tel', headerName: '手機' },
 		{

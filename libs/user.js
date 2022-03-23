@@ -10,7 +10,7 @@ const getUser = async function (filter, pagination) {
 	let total;
 	let prismaArgs = {};
 
-	let SELECT = `Select users.*, tp.*, tb.teacher_id, tb.time_id FROM users left join train_book as tb on tb.train_book_id = users.train_book_id left join train_period as tp on tp.train_period_id = tb.train_period_id where users.is_delete = false order by users.user_stu_num`;
+	let SELECT = `Select users.*, tp.*, tb.teacher_id, tb.time_id, (select score from score where score.user_id = users.user_id order by update_time desc limit 1) as score, (select update_time from score where score.user_id = users.user_id order by update_time desc limit 1) as last_play_time FROM users left join train_book as tb on tb.train_book_id = users.train_book_id left join train_period as tp on tp.train_period_id = tb.train_period_id where users.is_delete = false order by users.user_stu_num`;
 
 	let COUNT = `Select count(*) as total FROM users left join train_book as tb on tb.train_book_id = users.train_book_id left join train_period as tp on tp.train_period_id = tb.train_period_id where users.is_delete = false`;
 
