@@ -20,7 +20,7 @@ const createCsv = (fields, data, type) => {
 
 const csvData = async (train_period_id) => {
 	let data;
-	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
+	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, ,teacher_id,teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
     FROM users 
     INNER JOIN train_book as tb on tb.train_book_id = users.train_book_id 
     INNER JOIN train_period as tp on tp.train_period_id = tb.train_period_id
@@ -44,6 +44,11 @@ async function addData(csvJson) {
 	for (var i in csvJson) {
 		let group = Math.ceil(i / 25);
 		group = group == 0 ? 1 : group;
+		csvJson[i].group = '0' + group;
+		csvJson[i].group_num = parseInt(i) + 1;
+		csvJson[i].road_item = 2;
+
+		// date change
 		csvJson[i].user_born = getToday(true, csvJson[i].user_born).replaceAll(
 			'-',
 			''
@@ -52,9 +57,16 @@ async function addData(csvJson) {
 			true,
 			csvJson[i].teacher_born
 		).replaceAll('-', '');
-		csvJson[i].group = '0' + group;
-		csvJson[i].group_num = parseInt(i) + 1;
-		csvJson[i].road_item = 2;
+		csvJson[i].train_period_exam = csvJson[i].train_period_exam.replaceAll(
+			'/',
+			''
+		);
+		// source map A
+		csvJson[i].source_name = 'A'; //當期為A
+		// car map type 自排 = A 手排 = B
+		csvJson[i].car_type_name = csvJson[i].car_type_name.includes('自排')
+			? 'A'
+			: 'B';
 	}
 
 	return csvJson;
@@ -86,7 +98,7 @@ export const getCsvFile = async function (trainPeriodId) {
 		'user_email',
 	];
 	//开训名单
-	//[身分證字號10碼],[出生日期6~7碼],[姓名],[電話10碼],[學號7碼以下],[來源 1 碼],[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
+	//[身分證字號10碼],[出生日期6~7碼],[姓名],[電話10碼],[學號7碼以下],A[來源 1 碼],A[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
 	const startField = [
 		'user_id',
 		'user_born',
@@ -99,7 +111,7 @@ export const getCsvFile = async function (trainPeriodId) {
 		'teacher_born',
 	];
 	//结训名单
-	//[身分證字號 10 碼],[出生日期 6~7 碼],[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
+	//[身分證字號 10 碼],[出生日期 6~7 碼],A[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
 	const finishField = [
 		'user_id',
 		'user_born',
@@ -110,7 +122,7 @@ export const getCsvFile = async function (trainPeriodId) {
 	//考试名单
 	//[上課期別代碼 3~6 碼],[身分證字號 10 碼],[出生日期 6~7 碼],[組別],[筆試日期 6~7 碼],[組序號 1~3 碼(必為數字 1~999)]
 	const examField = [
-		'trian_period_name',
+		'train_period_name',
 		'user_id',
 		'user_born',
 		'group',
@@ -120,7 +132,7 @@ export const getCsvFile = async function (trainPeriodId) {
 	//路考名单
 	// [上課期別代碼 3~6 碼][身分證字號 10 碼][出生日期 6~7 碼][組別][路考日期 6~7 碼][組序號 1~3 碼(必為數字 1~999)] [路考項目 1 碼 (1:只考道路考;2:場考+道路考;3:只考場考)] （使用逗號區隔）
 	const roadField = [
-		'trian_period_name',
+		'train_period_name',
 		'user_id',
 		'user_born',
 		'group',
