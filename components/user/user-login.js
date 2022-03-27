@@ -9,7 +9,7 @@ import TextField from '@mui/material/TextField';
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-
+import { WEBTITLE } from '../../libs/front/constText';
 const UserLogin = () => {
 	const [values, setValues] = React.useState({
 		user_id: '',
@@ -72,7 +72,7 @@ const UserLogin = () => {
 					boxShadow: '10px 5px 50px',
 				}}>
 				<Grid item>
-					<h2>金門駕訓班-考試系統</h2>
+					<h2>{WEBTITLE}-考試系統</h2>
 				</Grid>
 				<Grid item xs={12}>
 					<TextField

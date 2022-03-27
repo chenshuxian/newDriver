@@ -1,6 +1,5 @@
 import prisma from './prisma';
 import errorCode from './errorCode';
-import { SourceRounded } from '@mui/icons-material';
 
 const getScore = async function (filter, pagination) {
 	let score;

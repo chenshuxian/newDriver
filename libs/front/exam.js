@@ -62,7 +62,6 @@ const getScore = async (data) => {
 			sessionStorage.setItem('score', JSON.stringify(data.score));
 			sessionStorage.setItem('ansList', JSON.stringify(data.ansList));
 			router.push('score');
-			console.log(`score data: ${data}`);
 		})
 		.catch((e) => {
 			console.log(`getAnswerErr: ${e}`);

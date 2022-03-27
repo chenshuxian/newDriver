@@ -1,9 +1,9 @@
-import * as React from 'react';
+import { useState } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { Form, Field } from 'react-final-form';
+import { Form } from 'react-final-form';
 import { Grid } from '@mui/material/';
 import { createTheme } from '@mui/material/styles';
 import { createStyles, makeStyles } from '@mui/styles';
@@ -18,6 +18,7 @@ import { userValidate } from '../../libs/front/validate';
 import { OnBlur, OnChange } from 'react-final-form-listeners';
 import { YEAR } from '../../libs/front/constText';
 import { SELECTFIELD, TEXTFIELD } from '../formItem';
+import CommonSnackBar from '../../components/CommonSnackBar';
 
 const defaultTheme = createTheme();
 const useStyles = makeStyles(
@@ -41,6 +42,9 @@ export default function NewFormDialog(props) {
 		data,
 		setRows,
 	} = props;
+
+	const [snackOpen, setSnackOpen] = useState(false);
+	const [msg, setMsg] = useState();
 
 	// console.log(`newForm : ${JSON.stringify(data)}`)
 	const classes = useStyles();
@@ -208,6 +212,10 @@ export default function NewFormDialog(props) {
 		{ name: 'user_addr', label: '地址', type: 'text', xs: 9 },
 	];
 
+	const handleSnackClose = () => {
+		setSnackOpen(false);
+	};
+
 	const onSubmit = async (values, form) => {
 		const ADD = submittedValues === undefined ? true : false;
 		// 刪除不必要資訊
@@ -221,6 +229,8 @@ export default function NewFormDialog(props) {
 			train_period_name,
 			user_born_mg,
 			is_delete,
+			score,
+			last_play_time,
 			...submitData
 		} = values;
 
@@ -288,7 +298,9 @@ export default function NewFormDialog(props) {
 					handleClose();
 				}
 			} else {
-				console.log(`新增失敗 ${result}`);
+				// console.log(`新增失敗 ${result}`);
+				setSnackOpen(true);
+				setMsg(`新增失敗 ${result}`);
 			}
 		} else {
 			result = await updatedUser(submitData);
@@ -306,7 +318,8 @@ export default function NewFormDialog(props) {
 					});
 				});
 				handleClose();
-				// window.alert('修改完成');
+				setSnackOpen(true);
+				setMsg('修改完成');
 			}
 		}
 		//JSON.stringify(values, 0, 2)
@@ -456,6 +469,11 @@ export default function NewFormDialog(props) {
 					/>
 				</DialogContent>
 			</Dialog>
+			<CommonSnackBar
+				open={snackOpen}
+				handleClose={handleSnackClose}
+				msg={msg}
+			/>
 		</div>
 	);
 }

@@ -1,34 +1,19 @@
-import Head from 'next/head';
-import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Snackbar from '@mui/material/Snackbar';
-import {
-	Box,
-	Button,
-	Container,
-	Grid,
-	Link,
-	TextField,
-	Typography,
-} from '@mui/material';
-
+import { Box, Button, Container, TextField, Typography } from '@mui/material';
 import { signIn, useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
+import CommonSnackBar from '../../components/CommonSnackBar';
 
 const Login = () => {
 	const { data: session } = useSession();
-	const [state, setState] = useState({
-		open: false,
-		vertical: 'top',
-		horizontal: 'center',
-	});
-	const [error, setError] = useState();
-	const { vertical, horizontal, open } = state;
+	const [open, setOpen] = useState(false);
 	const handleClose = () => {
-		setState({ ...state, open: false });
+		setOpen(false);
 	};
+	const [error, setError] = useState();
 
 	useEffect(() => {
 		// console.log(`admin session: ${JSON.stringify(session)}`);
@@ -56,7 +41,7 @@ const Login = () => {
 					console.log(`sigin data: ${JSON.stringify(data)}`);
 					if (data.error) {
 						setError('帳號密碼錯誤');
-						setState({ ...state, open: true });
+						setOpen(true);
 					}
 				})
 				.catch((e) => console.log(`signin err: ${e}`));
@@ -120,13 +105,18 @@ const Login = () => {
 							</Button>
 						</Box>
 						<div>
-							<Snackbar
+							<CommonSnackBar
+								open={open}
+								handleClose={handleClose}
+								msg={error}
+							/>
+							{/* <Snackbar
 								anchorOrigin={{ vertical, horizontal }}
 								open={open}
 								onClose={handleClose}
 								message={error}
 								key={vertical + horizontal}
-							/>
+							/> */}
 						</div>
 					</form>
 				</Container>

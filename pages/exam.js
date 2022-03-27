@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { getExam, getScore } from '../libs/front/exam';
-import { Grid, Box, Button, Typography } from '@mui/material';
+import { Grid, Box, Button } from '@mui/material';
 import ExamPageToolbar from '../components/examPage/exam-page-toolbar';
 import ExamTitle from '../components/examPage/exam-title';
 import ExamOption from '../components/examPage/exam-option';

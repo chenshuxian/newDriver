@@ -1,14 +1,9 @@
-import * as React from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import IconButton from '@mui/material/IconButton';
 import TextField from '@mui/material/TextField';
 import { Box } from '@mui/system';
-import {
-	DataGrid,
-	GridToolbarDensitySelector,
-	GridToolbarFilterButton,
-	GridActionsCellItem,
-} from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import ClearIcon from '@mui/icons-material/Clear';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -19,10 +14,9 @@ import NewFormDialog from './customer-list-dialog-new';
 import axios from 'axios';
 import { CustomerListToolbar } from './customer-list-toolbar';
 import { getToday, getFirstId } from '../../libs/common';
-import { getStudentNumber } from '../../libs/front/user';
+import { getStudentNumber, deletedUser } from '../../libs/front/user';
 import { getBookTime } from '../../libs/front/trainBook';
-import { deletedUser } from '../../libs/front/user';
-
+import CommonSnackBar from '../../components/CommonSnackBar';
 function escapeRegExp(value) {
 	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 }
@@ -90,20 +84,26 @@ QuickSearchToolbar.propTypes = {
 };
 
 export const CustomerListResults = ({ data }) => {
-	const [searchText, setSearchText] = React.useState('');
-	const [totalRows, setTotalRows] = React.useState([]);
-	const [rows, setRows] = React.useState([]);
-	const [open, setOpen] = React.useState(false);
-	const [submittedValues, setSubmittedValues] = React.useState(undefined);
-	const [studentNumber, setStudentNumber] = React.useState();
-	const [trainTime, setTrainTime] = React.useState();
+	const [searchText, setSearchText] = useState('');
+	const [totalRows, setTotalRows] = useState([]);
+	const [rows, setRows] = useState([]);
+	const [open, setOpen] = useState(false);
+	const [snackOpen, setSnackOpen] = useState(false);
+	const [msg, setMsg] = useState();
+	const [submittedValues, setSubmittedValues] = useState(undefined);
+	const [studentNumber, setStudentNumber] = useState();
+	const [trainTime, setTrainTime] = useState();
 	const trainPeriodDetail = JSON.parse(data.trainPeriodDetail);
 
 	const handleClose = () => {
 		setOpen(false);
 	};
 
-	const deleteUser = React.useCallback(
+	const handleSnackClose = () => {
+		setSnackOpen(false);
+	};
+
+	const deleteUser = useCallback(
 		(row) => async () => {
 			const id = row.user_uuid;
 			const name = row.user_name;
@@ -112,7 +112,9 @@ export const CustomerListResults = ({ data }) => {
 			if (confirm) {
 				const result = await deletedUser(id);
 				if (result) {
-					window.alert(`${name} 刪除成功`);
+					// window.alert(`${name} 刪除成功`);
+					setSnackOpen(true);
+					setMsg(`${name} 刪除成功`);
 					for await (const a of rows) {
 						index++;
 						if (a.user_uuid === id) {
@@ -124,14 +126,15 @@ export const CustomerListResults = ({ data }) => {
 						return [...rows.slice(0, index), ...rows.slice(index + 1)];
 					});
 				} else {
-					window.alert(`${name} 刪除失敗`);
+					setSnackOpen(true);
+					setMsg(`${name} 刪除失敗`);
 				}
 			}
 		},
 		[rows]
 	);
 
-	const editUser = React.useCallback(
+	const editUser = useCallback(
 		(row) => async () => {
 			row.user_born = row.user_born.substr(0, 10);
 			row.teacher_id =
@@ -161,7 +164,7 @@ export const CustomerListResults = ({ data }) => {
 		[]
 	);
 
-	const addUser = React.useCallback(
+	const addUser = useCallback(
 		() => async () => {
 			let trainPeriodId = data.thisPeriod;
 			let teacherId = await getFirstId(data.teacher);
@@ -189,7 +192,14 @@ export const CustomerListResults = ({ data }) => {
 		{ field: 'user_id', headerName: '身份證' },
 		{ field: 'user_name', headerName: '姓名' },
 		{ field: 'score', headerName: '考試成績' },
-		{ field: 'last_play_time', headerName: '考試時間' },
+		{
+			field: 'last_play_time',
+			headerName: '考試時間',
+			width: 150,
+			valueFormatter: (params) => {
+				return params.value?.substr(0, 10);
+			},
+		},
 		{
 			field: 'user_gender',
 			headerName: '性別',
@@ -221,7 +231,7 @@ export const CustomerListResults = ({ data }) => {
 		},
 	];
 
-	React.useEffect(() => {
+	useEffect(() => {
 		axios
 			.get(`/api/user`)
 			.then((res) => {
@@ -289,6 +299,11 @@ export const CustomerListResults = ({ data }) => {
 						data={data}
 						setSubmittedValues={setSubmittedValues}
 						submittedValues={submittedValues}
+					/>
+					<CommonSnackBar
+						open={snackOpen}
+						handleClose={handleSnackClose}
+						msg={msg}
 					/>
 				</Box>
 			</Box>

@@ -58,6 +58,7 @@ const ExamPagination = ({ examAns, examNum, changeQ, upQ, nextQ }) => {
 						return (
 							<>
 								<BTN
+									key={i}
 									examAns={examAns}
 									i={i}
 									focus={examNum}
@@ -68,7 +69,13 @@ const ExamPagination = ({ examAns, examNum, changeQ, upQ, nextQ }) => {
 						);
 					}
 					return (
-						<BTN examAns={examAns} i={i} focus={examNum} changeQ={changeQ} />
+						<BTN
+							key={i}
+							examAns={examAns}
+							i={i}
+							focus={examNum}
+							changeQ={changeQ}
+						/>
 					);
 				})}
 			</Box>
