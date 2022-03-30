@@ -1,6 +1,6 @@
 import prisma from './prisma';
 import errorCode from './errorCode';
-import { selectList, getToday } from '../libs/common';
+import { getToday } from '../libs/common';
 import { getTeacher } from './teacher';
 import { getTime } from './time';
 import { createManyTrainBook } from './trainBook';

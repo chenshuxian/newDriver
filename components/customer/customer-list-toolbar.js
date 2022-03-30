@@ -7,9 +7,8 @@ import {
 	Select,
 	MenuItem,
 } from '@mui/material';
-import React from 'react';
-import ArticleIcon from '@mui/icons-material/Article';
-import CloudDownloadIcon from '@mui/icons-material/CloudDownload';
+import { useState } from 'react';
+import { Article, CloudDownload } from '@mui/icons-material';
 import { download } from '../../libs/common';
 import { createCsv } from '../../libs/front/user';
 
@@ -18,8 +17,8 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 	const BUTTON_ONE = '建立CSV';
 	const BUTTON_TWO = '下載CSV';
 	const BUTTON_THREE = '新增學員';
-	const [period, setPeriod] = React.useState(thisPeriod);
-	const [disabled, setDisabled] = React.useState(true);
+	const [period, setPeriod] = useState(thisPeriod);
+	const [disabled, setDisabled] = useState(true);
 	let url = `/static/download/`;
 
 	const handleChange = (event) => {
@@ -64,13 +63,13 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 						</Select>
 					</FormControl>
 					<Button
-						startIcon={<ArticleIcon fontSize='small' />}
+						startIcon={<Article fontSize='small' />}
 						sx={{ mr: 1 }}
 						onClick={createCSV}>
 						{BUTTON_ONE}
 					</Button>
 					<Button
-						startIcon={<CloudDownloadIcon fontSize='small' />}
+						startIcon={<CloudDownload fontSize='small' />}
 						sx={{ mr: 1 }}
 						onClick={() =>
 							(window.location.href = `/download/${trainPeriod[period]}.zip`)

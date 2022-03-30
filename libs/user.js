@@ -53,17 +53,18 @@ const getUserByCredentials = async function (user_id, user_password) {
 	return user;
 };
 
-const getStudentNum = async function (trainPeriodId) {
+const getStudentNum = async function (trainPeriodId, sourceId) {
 	let stuNum;
 	let user_stu_name;
 	let train_period_name;
 	let number;
 	let numToStr;
+	let xuezhao = '0641878c-5967-11ec-a655-528abe1c4f3a';
 
 	const SQL = `SELECT max(user_stu_num) as user_stu_name, train_period_name FROM users 
   right join train_book as tb on tb.train_book_id = users.train_book_id
   inner join train_period as tp on tp.train_period_id = tb.train_period_id
-  where tb.train_period_id = '${trainPeriodId}' group by train_period_name;`;
+  where tb.train_period_id = '${trainPeriodId}' and source_id = '${sourceId}' group by train_period_name;`;
 
 	// console.log(`sql: ${SQL}`)
 
@@ -85,6 +86,10 @@ const getStudentNum = async function (trainPeriodId) {
 			numToStr = `00${number}`;
 		}
 		stuNum = `${train_period_name}${numToStr}`;
+	}
+
+	if (sourceId === xuezhao) {
+		stuNum = `${stuNum}S`;
 	}
 
 	return stuNum;

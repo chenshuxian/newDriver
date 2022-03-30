@@ -1,7 +1,5 @@
 import prisma from './prisma';
 import errorCode from './errorCode';
-import { getTeacher } from './teacher';
-import { getTime } from './time';
 
 const getTrainBook = async function(filter, pagination) {
   let trainBook;

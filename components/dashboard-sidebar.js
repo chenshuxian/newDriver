@@ -2,19 +2,11 @@ import { useEffect } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import {
-	Box,
-	Button,
-	Divider,
-	Drawer,
-	Typography,
-	useMediaQuery,
-} from '@mui/material';
+import { Box, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
 import { Cog as CogIcon } from '../icons/cog';
 import { Lock as LockIcon } from '../icons/lock';
 import { Selector as SelectorIcon } from '../icons/selector';
-import { ShoppingBag as ShoppingBagIcon } from '../icons/shopping-bag';
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { User as UserIcon } from '../icons/user';

@@ -1,10 +1,12 @@
 import { useState } from 'react';
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
+import {
+	Grid,
+	Button,
+	Dialog,
+	DialogContent,
+	DialogTitle,
+} from '@mui/material';
 import { Form } from 'react-final-form';
-import { Grid } from '@mui/material/';
 import { createTheme } from '@mui/material/styles';
 import { createStyles, makeStyles } from '@mui/styles';
 import { getToday, getFirstId } from '../../libs/common';
@@ -41,6 +43,7 @@ export default function NewFormDialog(props) {
 		submittedValues,
 		data,
 		setRows,
+		source_id
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
@@ -54,7 +57,7 @@ export default function NewFormDialog(props) {
 	const trainPeriodDetail = JSON.parse(data.trainPeriodDetail);
 	const car_type_id = '5220aa08-5966-11ec-a655-528abe1c4f3a';
 	const class_type_id = '47398668-5967-11ec-a655-528abe1c4f3a';
-	const source_id = '0641e268-5967-11ec-a655-528abe1c4f3a';
+	// const source_id = '0641e268-5967-11ec-a655-528abe1c4f3a';
 	const user_gender = '1';
 	const model_title = `會員資料管理 - ${submittedValues ? '修改' : '新增'}`;
 	let train_period_id = data.thisPeriod;
@@ -237,6 +240,7 @@ export default function NewFormDialog(props) {
 		let user_stu_num;
 		let confirm = false;
 		let result;
+		let source_id = submitData.source_id;
 
 		submitData.user_born = `${values.user_born}T00:00:00Z`;
 		submitData.train_book_id = await getBookId(
@@ -275,7 +279,7 @@ export default function NewFormDialog(props) {
 		};
 
 		const resetForm = async () => {
-			user_stu_num = await getStudentNumber(train_period_id);
+			user_stu_num = await getStudentNumber(train_period_id, source_id);
 			form.reset({
 				...values,
 				user_stu_num,
@@ -337,7 +341,7 @@ export default function NewFormDialog(props) {
 				train_period_end,
 				train_period_exam,
 				train_period_id: value,
-				user_stu_num: await getStudentNumber(value),
+				user_stu_num: await getStudentNumber(value, values.source_id),
 			});
 		}
 	};
@@ -354,6 +358,13 @@ export default function NewFormDialog(props) {
 		if (value !== '') {
 			setTrainTime(await getBookTime(values.train_period_id, value, user_id));
 		}
+	};
+
+	const sourceOnChange = async (value, form, values) => {
+		form.reset({
+			...values,
+			user_stu_num: await getStudentNumber(values.train_period_id, value),
+		});
 	};
 
 	const postOnBlur = async (value, form, values) => {
@@ -411,6 +422,9 @@ export default function NewFormDialog(props) {
 								</OnChange>
 								<OnChange name='teacher_id'>
 									{async (value) => teacherOnChange(value, form, values)}
+								</OnChange>
+								<OnChange name='source_id'>
+									{async (value) => sourceOnChange(value, form, values)}
 								</OnChange>
 								<OnBlur name='post_code_id'>
 									{async (value) => postOnBlur(value, form, values)}

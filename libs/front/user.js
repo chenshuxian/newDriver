@@ -2,9 +2,9 @@ import axios from 'axios';
 
 const URL = '/api/user';
 
-const getStudentNumber = async (tpId) => {
+const getStudentNumber = async (tpId, sId) => {
 	try {
-		const res = await axios.get(`${URL}/stuNum?trainPeriodId=${tpId}`);
+		const res = await axios.get(`${URL}/stuNum?trainPeriodId=${tpId}&sourceId=${sId}`);
 		return res.data.studentNumber;
 	} catch (e) {
 		return console.log(`loadExamErr: ${e}`);

@@ -9,4 +9,16 @@
 user table 新增最後練時間及成績
 
 20220327
-修改submitAnswer bug , 原因出於createScore import 一支非必要的 icon 導致第一次編譯時太慢
+修改 submitAnswer bug , 原因出於 createScore import 一支非必要的 icon 導致第一次編譯時太慢
+
+20220330
+修改學照學員學號，依來源不同取得不同之學號設定
+團報=> 10340A001
+學照學號後方+S => 10340A001S
+
+修改 libs/user getStudentNum function
+增加一個 source_id 報名來源參數
+
+const SQL = `SELECT max(user_stu_num) as user_stu_name, train_period_name FROM users right join train_book as tb on tb.train_book_id = users.train_book_id inner join train_period as tp on tp.train_period_id = tb.train_period_id where tb.train_period_id = '${trainPeriodId}' and source_id = '${sourceId}' <=== add group by train_period_name;`;
+
+libs/front/user getStudentNumber

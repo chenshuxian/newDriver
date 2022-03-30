@@ -20,9 +20,15 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *         required: false
  *         schema:
  *           type: string
+ *       - name: sourceId
+ *         in: query
+ *         description: sourceId
+ *         required: false
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
- *         description: student number 
+ *         description: student number
  *         content:
  *           application/json:
  *             schema:
@@ -30,36 +36,34 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *               description: Auto create student number
  *               example: 期別 + 數字 10247A035
  */
-export default async(req, res) => {
+export default async (req, res) => {
+	let stu_num;
+	const {
+		query: { trainPeriodId, sourceId },
+	} = req;
 
-    let stu_num;
-    const {
-        query: { trainPeriodId },
-      } = req
+	if (req.method !== 'GET') {
+		res.setHeader('Allow', ['GET']);
+		res.status(405).json(errorCode.MethodNotAllowed);
+		return;
+	}
 
-    if (req.method !== 'GET') {
-        res.setHeader('Allow', ['GET']);
-        res.status(405).json(errorCode.MethodNotAllowed);
-        return;
-    }
+	// if (!(await isAdmin(req))) {
+	// 	res.status(401).json(errorCode.Unauthorized);
+	// 	return;
+	// }
 
-//   if (!await isAdmin(req)) {
-//     res.status(401).json(errorCode.Unauthorized);
-//     return;
-//   }
+	try {
+		stu_num = await getStudentNum(trainPeriodId, sourceId);
+	} catch (e) {
+		res.status(e.statusCode).json(e);
+		return;
+	}
 
-    try {
-        stu_num = await getStudentNum(trainPeriodId);
-    } catch (e) {
-        res.status(e.statusCode).json(e);
-        return;
-    }
+	if (stu_num) {
+		res.status(200).json({ studentNumber: stu_num });
+		return;
+	}
 
-
-    if (stu_num) {
-        res.status(200).json({studentNumber: stu_num});
-        return;
-    }
-
-  res.status(500).json(errorCode.InternalServerError);
+	res.status(500).json(errorCode.InternalServerError);
 };

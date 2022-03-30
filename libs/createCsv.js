@@ -27,7 +27,7 @@ const csvData = async (train_period_id) => {
     INNER JOIN source on source.source_id = users.source_id 
     INNER JOIN car_type as ct on ct.car_type_id = users.car_type_id
     INNER JOIN teacher on teacher.teacher_id = tb.teacher_id 
-    WHERE tb.train_period_id = '${train_period_id}' and users.is_delete = 0 order by users.user_stu_num`;
+    WHERE tb.train_period_id = '${train_period_id}' and users.source_id = '0641e268-5967-11ec-a655-528abe1c4f3a' and users.is_delete = 0 order by users.user_stu_num`;
 
 	data = await prisma.$queryRawUnsafe(SQL);
 

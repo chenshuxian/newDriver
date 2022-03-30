@@ -1,4 +1,3 @@
-import React from 'react';
 import { Box, Container } from '@mui/material';
 import { CustomerListResults } from '../../components/customer/customer-list-results';
 import { DashboardLayout } from '../../components/dashboard-layout';
