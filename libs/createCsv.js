@@ -20,7 +20,7 @@ const createCsv = (fields, data, type) => {
 
 const csvData = async (train_period_id) => {
 	let data;
-	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, teacher_id,teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
+	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, teacher.teacher_id,teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
     FROM users 
     INNER JOIN train_book as tb on tb.train_book_id = users.train_book_id 
     INNER JOIN train_period as tp on tp.train_period_id = tb.train_period_id
