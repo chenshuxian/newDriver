@@ -12,6 +12,7 @@ user table 新增最後練時間及成績
 修改 submitAnswer bug , 原因出於 createScore import 一支非必要的 icon 導致第一次編譯時太慢
 
 20220330
+modules 優化
 修改學照學員學號，依來源不同取得不同之學號設定
 團報=> 10340A001
 學照學號後方+S => 10340A001S
