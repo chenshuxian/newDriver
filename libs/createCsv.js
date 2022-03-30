@@ -20,14 +20,14 @@ const createCsv = (fields, data, type) => {
 
 const csvData = async (train_period_id) => {
 	let data;
-	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, ,teacher_id,teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
+	let SQL = `SELECT user_id, user_born, user_name, user_tel, user_email, user_addr, user_stu_num, source_name, car_type_name, teacher_id,teacher_name, teacher_born, train_period_name, train_period_exam, post_code_id
     FROM users 
     INNER JOIN train_book as tb on tb.train_book_id = users.train_book_id 
     INNER JOIN train_period as tp on tp.train_period_id = tb.train_period_id
     INNER JOIN source on source.source_id = users.source_id 
     INNER JOIN car_type as ct on ct.car_type_id = users.car_type_id
     INNER JOIN teacher on teacher.teacher_id = tb.teacher_id 
-    WHERE tb.train_period_id = '${train_period_id}' and users.source_id = '0641e268-5967-11ec-a655-528abe1c4f3a' and users.is_delete = 0 order by users.user_stu_num`;
+    WHERE tb.train_period_id = '${train_period_id}' and users.source_id ='0641e268-5967-11ec-a655-528abe1c4f3a' and users.is_delete = 0 order by users.user_stu_num`;
 
 	data = await prisma.$queryRawUnsafe(SQL);
 
