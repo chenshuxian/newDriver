@@ -54,11 +54,12 @@ const getExam = async (user_id) => {
 	}
 };
 
-const getScore = async (data) => {
+const getScore = async (data, setDisabledBtn) => {
 	axios
 		.post('/api/exam/submitAnswer', data)
 		.then((res) => {
 			const data = res.data;
+			setDisabledBtn(false);
 			sessionStorage.setItem('score', JSON.stringify(data.score));
 			sessionStorage.setItem('ansList', JSON.stringify(data.ansList));
 			router.push('score');

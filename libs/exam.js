@@ -167,8 +167,9 @@ const getExamRandom = async function (id) {
 	group by exam_number order by rand() limit 1`;
 
 	exam_number = await prisma.$queryRawUnsafe(`${examIdSql}`);
-	num = exam_number[0]['exam_number'];
+
 	if (exam_number.length > 0) {
+		num = exam_number[0]['exam_number'];
 		examSql = `select * from exam where exam_number = ${num} `;
 		exam = await prisma.$queryRawUnsafe(`${examSql}`);
 	} else {

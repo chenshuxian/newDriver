@@ -18,6 +18,7 @@ const Exam = () => {
 	const [examList, setExamList] = useState(null);
 	const [examNum, setExamNum] = useState(0); // 題號
 	const [examAns, setExamAns] = useState(initAns); // 回答答案
+	const [disabledBtn, setDisabledBtn] = useState(false);
 
 	useEffect(async () => {
 		ans = {};
@@ -54,7 +55,8 @@ const Exam = () => {
 	// 取得成績
 	const score = () => {
 		//console.log(`getScore: ${JSON.stringify(ans)}`)
-		getScore(ans);
+		setDisabledBtn(true);
+		getScore(ans, setDisabledBtn);
 	};
 
 	return (
@@ -89,7 +91,11 @@ const Exam = () => {
 							/>
 						</Grid>
 						<Grid item xs={12} sx={{ maxHeight: 100 }}>
-							<Button variant='contained' color='info' onClick={score}>
+							<Button
+								variant='contained'
+								color='info'
+								onClick={score}
+								disabled={disabledBtn}>
 								交卷
 							</Button>
 						</Grid>
