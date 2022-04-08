@@ -12,6 +12,7 @@
     "@mui/material": "latest",
     "@mui/styles": "5.0.2",
     "@mui/x-data-grid": "^5.4.0",
+    "@next/bundle-analyzer": "^12.1.2",
     "@prisma/client": "^3.6.0",
     "axios": "^0.25.0",
     "chart.js": "3.5.1",

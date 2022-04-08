@@ -68,6 +68,8 @@ function Auth({ children, url }) {
 	const isAdmin = session?.user.isAdmin;
 	const pathName = router.pathname;
 
+	console.log(`isAdmin: ${isAdmin}`);
+
 	React.useEffect(() => {
 		if (status === 'loading') return;
 		if (!isUser) {
@@ -75,7 +77,7 @@ function Auth({ children, url }) {
 		}
 
 		if (pathName.includes('admin') && !isAdmin) {
-			router.push('/admin');
+			router.push('/admin/login');
 		}
 	}, [isUser, status]);
 

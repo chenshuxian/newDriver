@@ -1,11 +1,7 @@
 import { useCallback, useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { IconButton, TextField } from '@mui/material';
 import { Box } from '@mui/system';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { Clear, Search, Delete, Edit } from '@mui/icons-material';
-import { createTheme } from '@mui/material/styles';
-import { createStyles, makeStyles } from '@mui/styles';
 import NewFormDialog from './customer-list-dialog-new';
 import axios from 'axios';
 import { CustomerListToolbar } from './customer-list-toolbar';
@@ -13,71 +9,7 @@ import { getToday, getFirstId } from '../../libs/common';
 import { getStudentNumber, deletedUser } from '../../libs/front/user';
 import { getBookTime } from '../../libs/front/trainBook';
 import CommonSnackBar from '../../components/CommonSnackBar';
-function escapeRegExp(value) {
-	return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
-}
-
-const defaultTheme = createTheme();
-const useStyles = makeStyles(
-	(theme) =>
-		createStyles({
-			root: {
-				padding: theme.spacing(0.5, 0.5, 0),
-				justifyContent: 'space-between',
-				display: 'flex',
-				alignItems: 'flex-start',
-				flexWrap: 'wrap',
-			},
-			textField: {
-				[theme.breakpoints.down('xs')]: {
-					width: '100%',
-				},
-				margin: theme.spacing(1, 0.5, 1.5),
-				'& .MuiSvgIcon-root': {
-					marginRight: theme.spacing(0.5),
-				},
-				'& .MuiInput-underline:before': {
-					borderBottom: `1px solid ${theme.palette.divider}`,
-				},
-			},
-		}),
-	{ defaultTheme }
-);
-
-function QuickSearchToolbar(props) {
-	const classes = useStyles();
-
-	return (
-		<div className={classes.root}>
-			<TextField
-				variant='standard'
-				value={props.value}
-				onChange={props.onChange}
-				placeholder='Search…'
-				className={classes.textField}
-				InputProps={{
-					startAdornment: <Search fontSize='small' />,
-					endAdornment: (
-						<IconButton
-							title='Clear'
-							aria-label='Clear'
-							size='small'
-							style={{ visibility: props.value ? 'visible' : 'hidden' }}
-							onClick={props.clearSearch}>
-							<Clear fontSize='small' />
-						</IconButton>
-					),
-				}}
-			/>
-		</div>
-	);
-}
-
-QuickSearchToolbar.propTypes = {
-	clearSearch: PropTypes.func.isRequired,
-	onChange: PropTypes.func.isRequired,
-	value: PropTypes.string.isRequired,
-};
+import { requestSearch, QuickSearchToolbar } from '../DataGridFunction';
 
 export const CustomerListResults = ({ data }) => {
 	const [searchText, setSearchText] = useState('');
@@ -239,20 +171,6 @@ export const CustomerListResults = ({ data }) => {
 			.catch((e) => console.log(`loadExamErr: ${e}`));
 	}, []);
 
-	const requestSearch = (searchValue) => {
-		setSearchText(searchValue);
-		const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
-		const filteredRows = totalRows.filter((row) => {
-			return Object.keys(row).some((field) => {
-				console.log(typeof row[field] === 'string');
-				return searchRegex.test(
-					typeof row[field] === 'string' ? row[field].toString() : row[field]
-				);
-			});
-		});
-		setRows(filteredRows);
-	};
-
 	return (
 		<>
 			<CustomerListToolbar
@@ -280,8 +198,15 @@ export const CustomerListResults = ({ data }) => {
 						componentsProps={{
 							toolbar: {
 								value: searchText,
-								onChange: (event) => requestSearch(event.target.value),
-								clearSearch: () => requestSearch(''),
+								onChange: (event) =>
+									requestSearch(
+										event.target.value,
+										setRows,
+										setSearchText,
+										totalRows
+									),
+								clearSearch: () =>
+									requestSearch('', setRows, setSearchText, totalRows),
 							},
 						}}
 					/>

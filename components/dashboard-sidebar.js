@@ -34,9 +34,9 @@ const items = [
 		title: '考題管理',
 	},
 	{
-		href: '/admin/products',
-		icon: <DirectionsCarIcon fontSize='small' />,
-		title: '汽車管理',
+		href: '/admin/teacher',
+		icon: <UserIcon fontSize='small' />,
+		title: '教師管理',
 	},
 	{
 		href: '/admin/account',

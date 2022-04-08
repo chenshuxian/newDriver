@@ -1,8 +1,12 @@
 import Head from 'next/head';
-import { Box, Container, Typography } from '@mui/material';
+import { Grid, Box, Container, Typography } from '@mui/material';
 import { DashboardLayout } from '../../components/dashboard-layout';
-import { SettingsNotifications } from '../../components/settings/settings-notifications';
-import { SettingsPassword } from '../../components/settings/settings-password';
+import {
+	SettingsTime,
+	SettingsCarType,
+	SettingsClassType,
+	SettingsPeriod,
+} from '../../components/settings/';
 
 const Settings = () => (
 	<>
@@ -12,14 +16,24 @@ const Settings = () => (
 				flexGrow: 1,
 				py: 8,
 			}}>
-			<Container maxWidth='lg'>
+			<Container>
 				<Typography sx={{ mb: 3 }} variant='h4'>
 					Settings
 				</Typography>
-				<SettingsNotifications />
-				<Box sx={{ pt: 3 }}>
-					<SettingsPassword />
-				</Box>
+				<Grid container justifyContent='center' spacing={2}>
+					<Grid item xs={6}>
+						<SettingsTime />
+					</Grid>
+					<Grid item xs={6}>
+						<SettingsCarType />
+					</Grid>
+					<Grid item xs={6}>
+						<SettingsClassType />
+					</Grid>
+					<Grid item xs={6}>
+						<SettingsPeriod />
+					</Grid>
+				</Grid>
 			</Container>
 		</Box>
 	</>

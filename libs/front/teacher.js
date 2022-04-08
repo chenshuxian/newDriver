@@ -22,68 +22,35 @@ const getTeacherSelect = () => {
   .catch((e)=>console.log(`loadExamErr: ${e}`))
 }
 
-function singleDel(id, list, setModalShow, setList) {
-  axios.delete(`/api/exam/${id}`)
-    .then((res) => {
-      if (res.data) {
-        setModalShow(false);
-        list.filter(function (item, index, array) {
-          if (item.exam_id === res.data.exam_id) {
-            let newList = [...list];
-            newList.splice(index, 1);
-            setList(newList);
-            alert('刪除成功');
-          }
-        });
+const createdTeacher = async (data) => {
+	try {
+		const res = await axios.post(`${URL}`, data);
+		return res;
+	} catch (e) {
+		return window.alert('新增失敗請與管理員連絡');
+	}
+};
 
-      }
-    })
-    .catch((e) => console.log(`upload img ERR: ${e}`));
-}
+const updatedTeacher = async (data) => {
+	try {
+		const res = await axios.patch(`${URL}/${data.teacher_id}`, data);
+		return res;
+	} catch (e) {
+		return console.log(`updatedUser err: ${e}`);
+	}
+};
 
-const batchDel = (data, setList) => {
-
-    axios.post('/api/exam/batchDelete',data)
-    .then((res) => {
-        if(res.data.count){
-            getList(setList)
-        }
-    })
-    .catch((e)=> console.log(`exam delete batch err: ${e}`))
-}
-
-const updateData = (data, list, setModalShow, setList) => {
-    axios.patch(`/api/exam/${data.exam_id}`,data)
-    .then((res) => {
-      if(res.data){
-        setModalShow(false)
-        list.filter(function(item, index, array){
-          if(item.exam_id === res.data.exam_id){
-            let newList = [...list];
-            newList[index] = res.data
-            setList(newList);
-            alert('修改成功')
-          }
-        })
-      
-       }
-    })
-    .catch((e) => console.log(`upload img ERR: ${e}`))
-}
-
-const addData = (data, list, setModalShow, setList) => {
-    axios.post('/api/exam',data)
-    .then((res) => {
-      console.log(res);
-      setModalShow(false)
-      let newList = [...list];
-      newList.unshift(res.data)
-      setList(newList);
-      alert('新增成功')
-    })
-    .catch((e) => console.log(`insert exam data ERR: ${e}`))
-}
+const deletedTeacher = async (id) => {
+	try {
+		const res = await axios.delete(`${URL}/${id}`);
+		return res;
+	} catch (e) {
+		return console.log(`deletedUser err: ${e}`);
+	}
+};
 
 
 
-export { getTeacherList, getTeacherSelect, singleDel, batchDel, updateData, addData }
+
+
+export { getTeacherList, getTeacherSelect, createdTeacher, updatedTeacher, deletedTeacher }
