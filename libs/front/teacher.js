@@ -11,15 +11,6 @@ const getTeacherList = async (setList) => {
 	}
 }
 
-const getTeacherSelect = async () => {
-  try {
-		const res = await axios.get(`${URL}?isDelete=false&list=true`);
-		return res.data.teacherList;
-	} catch (e) {
-		return console.log(`loadExamErr: ${e}`);
-	}
-}
-
 const createdTeacher = async (data) => {
 	try {
 		const res = await axios.post(`${URL}`, data);
@@ -51,4 +42,4 @@ const deletedTeacher = async (id) => {
 
 
 
-export { getTeacherList, getTeacherSelect, createdTeacher, updatedTeacher, deletedTeacher }
+export { getTeacherList, createdTeacher, updatedTeacher, deletedTeacher }

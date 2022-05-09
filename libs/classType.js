@@ -93,23 +93,35 @@ const updateClassType = async function (class_type_id, data) {
 	return classType;
 };
 
-const deleteClassType = async function (class_type_id) {
+const deleteClassType = async function (
+	class_type_id,
+	is_delete,
+	delete_forever = false
+) {
 	let classType;
-	try {
-		classType = await prisma.class_type.update({
+	if (delete_forever) {
+		classType = await prisma.class_type.delete({
 			where: {
 				class_type_id,
 			},
-			data: {
-				is_delete: true,
-			},
 		});
-	} catch (e) {
-		console.log(e);
-		if (e.code === 'P2025') {
-			throw errorCode.NotFound;
+	} else {
+		try {
+			classType = await prisma.class_type.update({
+				where: {
+					class_type_id,
+				},
+				data: {
+					is_delete,
+				},
+			});
+		} catch (e) {
+			console.log(e);
+			if (e.code === 'P2025') {
+				throw errorCode.NotFound;
+			}
+			throw errorCode.InternalServerError;
 		}
-		throw errorCode.InternalServerError;
 	}
 
 	return classType;

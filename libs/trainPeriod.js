@@ -5,6 +5,7 @@ import { getTeacher } from './teacher';
 import { getTime } from './time';
 import { createManyTrainBook } from './trainBook';
 import { YEAR } from './front/constText';
+import { objectFlat } from './common';
 
 const getTeacherAndTime = async function () {
 	let teacherData = await getTeacher();
@@ -40,6 +41,17 @@ const getTrainPeriod = async function (filter, pagination) {
 	trainPeriod = await prisma.train_period.findMany(prismaArgs);
 
 	return { trainPeriod, total };
+};
+
+const getAllowPeriod = async function (carType, classType, month) {
+	let trian_period;
+	let today = await getToday(true);
+	today = today.replaceAll('-', '/');
+
+	let SQL = `SELECT * FROM train_period where train_period_start > '${today}'`;
+	trian_period = await prisma.$queryRawUnsafe(SQL);
+
+	return trian_period;
 };
 
 // 取得本月期別
@@ -190,4 +202,5 @@ export {
 	updateTrainPeriod,
 	deleteTrainPeriod,
 	getTrainPeriodById,
+	getAllowPeriod,
 };
