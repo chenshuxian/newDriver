@@ -1,39 +1,43 @@
-import { getTimeById, updateTime, deleteTime } from '../../../libs/time';
+import {
+	getCarTypeById,
+	updateCarType,
+	deleteCarType,
+} from '../../../libs/carType';
 import errorCode from '../../../libs/errorCode';
 import { isAdmin } from '../../../libs/auth';
 
 /**
  * @swagger
- * /api/time/{id}:
+ * /api/carType/{id}:
  *   get:
  *     tags:
- *       - time
- *     summary: Get a time
- *     description: Get a time
+ *       - carType
+ *     summary: Get a carType
+ *     description: Get a carType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the carType
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: time
+ *         description: carType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/carType'
  *   patch:
  *     tags:
- *       - time
- *     summary: Update a time
- *     description: Update a time
+ *       - carType
+ *     summary: Update a carType
+ *     description: Update a carType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the carType
  *         schema:
  *           type: string
  *     requestBody:
@@ -41,38 +45,38 @@ import { isAdmin } from '../../../libs/auth';
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/definitions/time'
+ *             $ref: '#/definitions/carType'
  *     responses:
  *       200:
- *         description: time
+ *         description: carType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/carType'
  *   delete:
  *     tags:
- *       - time
- *     summary: Delete a time
- *     description: Delete a time
+ *       - carType
+ *     summary: Delete a carType
+ *     description: Delete a carType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the carType
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: time
+ *         description: carType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/carType'
  */
 export default async (req, res) => {
 	const {
 		query: { id },
-		body: timeData,
+		body: carTypeData,
 		method,
 	} = req;
 
@@ -81,27 +85,27 @@ export default async (req, res) => {
 	//   return;
 	// }
 
-	let time;
-	let Id = parseInt(id);
-	let del = timeData.del;
-	let delForever = timeData.forever;
+	let carType;
+	let Id = id;
+	let del = carTypeData.del;
+	let delForever = carTypeData.forever;
 	switch (method) {
 		case 'GET':
 			try {
-				time = await getTimeById(Id);
+				carType = await getCarById(Id);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
 			}
 			break;
 		case 'PATCH':
-			if (!timeData) {
+			if (!carTypeData) {
 				res.status(400).json(errorCode.BadRequest);
 				return;
 			}
 
 			try {
-				time = await updateTime(Id, timeData);
+				carType = await updateCarType(Id, carTypeData);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
@@ -109,7 +113,7 @@ export default async (req, res) => {
 			break;
 		case 'DELETE':
 			try {
-				time = await deleteTime(Id, del, delForever);
+				carType = await deleteCarType(Id, del, delForever);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
@@ -121,8 +125,8 @@ export default async (req, res) => {
 			return;
 	}
 
-	if (time) {
-		res.status(200).json(time);
+	if (carType) {
+		res.status(200).json(carType);
 		return;
 	}
 

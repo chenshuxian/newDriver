@@ -1,116 +1,124 @@
 import prisma from './prisma';
 import errorCode from './errorCode';
+import { v4 as uuidv4 } from 'uuid';
 
-const getClassType = async function(filter, pagination) {
-  let classType;
-  let total;
-  let prismaArgs = {};
+const getClassType = async function (filter, pagination) {
+	let classType;
+	let total;
+	let prismaArgs = {};
 
-  if (filter) {
-    prismaArgs['where'] = filter;
-  }
+	if (filter) {
+		prismaArgs['where'] = filter;
+	}
 
-  if (pagination) {
-    prismaArgs['skip'] = parseInt(pagination.offset) || 0;
-    prismaArgs['take'] = parseInt(pagination.limit) || 50;
-  }
+	if (pagination) {
+		prismaArgs['skip'] = parseInt(pagination.offset) || 0;
+		prismaArgs['take'] = parseInt(pagination.limit) || 50;
+	}
 
-  total = await getClassTypeCount(filter);
-  if (!total) {
-    throw errorCode.NotFound;
-  }
+	total = await getClassTypeCount(filter);
+	if (!total) {
+		throw errorCode.NotFound;
+	}
 
-  classType = await prisma.class_type.findMany(prismaArgs);
+	classType = await prisma.class_type.findMany(prismaArgs);
 
-  return { classType, total };
-}
+	return { classType, total };
+};
 
-const getClassTypeById = async function(class_type_id) {
-  let classType = await prisma.class_type.findUnique({
-    where: {
-        class_type_id
-    }
-  });
+const getClassTypeById = async function (class_type_id) {
+	let classType = await prisma.class_type.findUnique({
+		where: {
+			class_type_id,
+		},
+	});
 
-  if (!classType) {
-    throw errorCode.NotFound;
-  }
+	if (!classType) {
+		throw errorCode.NotFound;
+	}
 
-  return classType;
-}
+	return classType;
+};
 
-const getClassTypeCount = async function(filter) {
-  let count;
-  let prismaArgs = {};
+const getClassTypeCount = async function (filter) {
+	let count;
+	let prismaArgs = {};
 
-  prismaArgs['_count'] = { class_type_id: true };
-  if (filter) {
-    prismaArgs['where'] = filter;
-  }
+	prismaArgs['_count'] = { class_type_id: true };
+	if (filter) {
+		prismaArgs['where'] = filter;
+	}
 
-  count = await prisma.class_type.aggregate(prismaArgs);
+	count = await prisma.class_type.aggregate(prismaArgs);
 
-  if (count) {
-    return count._count.class_type_id;
-  }
+	if (count) {
+		return count._count.class_type_id;
+	}
 
-  return 0;
-}
+	return 0;
+};
 
-const createClassType = async function(data) {
-  let classType;
+const createClassType = async function (data) {
+	let classType;
+	data.class_type_id = uuidv4();
 
-  try {
-    classType = await prisma.class_type.create({
-      data
-    });
-  } catch (e) {
-    throw errorCode.InternalServerError;
-  }
+	try {
+		classType = await prisma.class_type.create({
+			data,
+		});
+	} catch (e) {
+		throw errorCode.InternalServerError;
+	}
 
-  return classType;
-}
+	return classType;
+};
 
-const updateClassType = async function(class_type_id, data) {
-  let classType;
+const updateClassType = async function (class_type_id, data) {
+	let classType;
 
-  try {
-    classType = await prisma.class_type.update({
-      where: {
-        class_type_id
-      },
-      data
-    })
-  } catch (e) {
-    if (e.code === "P2025") {
-      throw errorCode.NotFound;
-    }
-    throw errorCode.InternalServerError;
-  }
+	try {
+		classType = await prisma.class_type.update({
+			where: {
+				class_type_id,
+			},
+			data,
+		});
+	} catch (e) {
+		if (e.code === 'P2025') {
+			throw errorCode.NotFound;
+		}
+		throw errorCode.InternalServerError;
+	}
 
-  return classType;
-}
+	return classType;
+};
 
-const deleteClassType = async function(class_type_id) {
-  let classType;
-  try {
-    classType = await prisma.class_type.update({
-      where: {
-        class_type_id
-      },
-      data: {
-        is_delete: true
-      }
-    });
-  } catch (e) {
-    console.log(e)
-    if (e.code === "P2025") {
-      throw errorCode.NotFound;
-    }
-    throw errorCode.InternalServerError;
-  }
+const deleteClassType = async function (class_type_id) {
+	let classType;
+	try {
+		classType = await prisma.class_type.update({
+			where: {
+				class_type_id,
+			},
+			data: {
+				is_delete: true,
+			},
+		});
+	} catch (e) {
+		console.log(e);
+		if (e.code === 'P2025') {
+			throw errorCode.NotFound;
+		}
+		throw errorCode.InternalServerError;
+	}
 
-  return classType;
-}
+	return classType;
+};
 
-export { getClassType, createClassType, updateClassType, deleteClassType, getClassTypeById };
+export {
+	getClassType,
+	createClassType,
+	updateClassType,
+	deleteClassType,
+	getClassTypeById,
+};

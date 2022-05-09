@@ -32,10 +32,10 @@ const Customers = ({ data }) => {
 
 Customers.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
 	let data = {};
 	let b = {};
-	const t = await getTeacher();
+	const t = await getTeacher({ is_delete: false });
 	const time = await getTime();
 	const train = await getTrainPeriod();
 	const carType = await getCarType();

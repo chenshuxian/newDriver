@@ -2,24 +2,22 @@ import axios from "axios";
 
 const URL = '/api/teacher';
 
-const getTeacherList = (setList) => {
-    return axios.get(`${URL}?isDelete=false`)
-    .then((res)=>
-    { 
-        //console.log(`examList: ${JSON.stringify(res.data.examList)}`)
-        return res.data.teacherList
-    })
-    .catch((e)=>console.log(`loadExamErr: ${e}`))
+const getTeacherList = async (setList) => {
+    try {
+		const res = await axios.get(`${URL}?isDelete=false`);
+		return res.data.teacherList;
+	} catch (e) {
+		return console.log(`loadExamErr: ${e}`);
+	}
 }
 
-const getTeacherSelect = () => {
-  return axios.get(`${URL}?isDelete=false&list=true`)
-  .then((res)=>
-  { 
-      //console.log(`examList: ${JSON.stringify(res.data.examList)}`)
-      return res.data.teacherList
-  })
-  .catch((e)=>console.log(`loadExamErr: ${e}`))
+const getTeacherSelect = async () => {
+  try {
+		const res = await axios.get(`${URL}?isDelete=false&list=true`);
+		return res.data.teacherList;
+	} catch (e) {
+		return console.log(`loadExamErr: ${e}`);
+	}
 }
 
 const createdTeacher = async (data) => {

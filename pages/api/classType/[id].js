@@ -1,39 +1,43 @@
-import { getTimeById, updateTime, deleteTime } from '../../../libs/time';
+import {
+	getClassTypeById,
+	updateClassType,
+	deleteClassType,
+} from '../../../libs/classType';
 import errorCode from '../../../libs/errorCode';
 import { isAdmin } from '../../../libs/auth';
 
 /**
  * @swagger
- * /api/time/{id}:
+ * /api/classType/{id}:
  *   get:
  *     tags:
- *       - time
- *     summary: Get a time
- *     description: Get a time
+ *       - classType
+ *     summary: Get a classType
+ *     description: Get a classType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the classType
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: time
+ *         description: classType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/classType'
  *   patch:
  *     tags:
- *       - time
- *     summary: Update a time
- *     description: Update a time
+ *       - classType
+ *     summary: Update a classType
+ *     description: Update a classType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the classType
  *         schema:
  *           type: string
  *     requestBody:
@@ -41,38 +45,38 @@ import { isAdmin } from '../../../libs/auth';
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/definitions/time'
+ *             $ref: '#/definitions/classType'
  *     responses:
  *       200:
- *         description: time
+ *         description: classType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/classType'
  *   delete:
  *     tags:
- *       - time
- *     summary: Delete a time
- *     description: Delete a time
+ *       - classType
+ *     summary: Delete a classType
+ *     description: Delete a classType
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
- *         description: ID of the time
+ *         description: ID of the classType
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: time
+ *         description: classType
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/definitions/time'
+ *               $ref: '#/definitions/classType'
  */
 export default async (req, res) => {
 	const {
 		query: { id },
-		body: timeData,
+		body: classTypeData,
 		method,
 	} = req;
 
@@ -81,27 +85,27 @@ export default async (req, res) => {
 	//   return;
 	// }
 
-	let time;
-	let Id = parseInt(id);
-	let del = timeData.del;
-	let delForever = timeData.forever;
+	let classType;
+	let Id = id;
+	let del = classTypeData.del;
+	let delForever = classTypeData.forever;
 	switch (method) {
 		case 'GET':
 			try {
-				time = await getTimeById(Id);
+				classType = await getClassById(Id);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
 			}
 			break;
 		case 'PATCH':
-			if (!timeData) {
+			if (!classTypeData) {
 				res.status(400).json(errorCode.BadRequest);
 				return;
 			}
 
 			try {
-				time = await updateTime(Id, timeData);
+				classType = await updateClassType(Id, classTypeData);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
@@ -109,7 +113,7 @@ export default async (req, res) => {
 			break;
 		case 'DELETE':
 			try {
-				time = await deleteTime(Id, del, delForever);
+				classType = await deleteClassType(Id, del, delForever);
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;
@@ -121,8 +125,8 @@ export default async (req, res) => {
 			return;
 	}
 
-	if (time) {
-		res.status(200).json(time);
+	if (classType) {
+		res.status(200).json(classType);
 		return;
 	}
 

@@ -17,6 +17,15 @@ const objectFlat = (arr, key, value) => {
 	return b;
 };
 
+const objectAutoComp = (arr, key, value) => {
+	let newA;
+	newA = arr.map((c) => {
+		return { label: c.time_name, id: c.time_id };
+	});
+
+	return newA;
+};
+
 const getToday = (mi = false, day) => {
 	let today = new Date();
 	if (day) {
@@ -65,4 +74,12 @@ function download(url, setDisabled) {
 		.catch((err) => setDisabled(true));
 }
 
-export { selectList, objectFlat, getToday, getFirstId, strToDate, download };
+export {
+	selectList,
+	objectFlat,
+	objectAutoComp,
+	getToday,
+	getFirstId,
+	strToDate,
+	download,
+};

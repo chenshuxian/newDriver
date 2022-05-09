@@ -1,30 +1,35 @@
+import { Card, CardHeader, Divider, CardContent } from '@mui/material';
+import { CommonDataGrid } from './commonDataGrid';
+import { objectFlat } from '../../libs/common';
 import {
-	Box,
-	Card,
-	CardHeader,
-	Divider,
-	CardContent,
-	Button,
-} from '@mui/material';
+	deletedClassType,
+	createdClassType,
+	updatedClassType,
+} from '../../libs/front/classType';
 
-const SettingsClassType = () => {
+const SettingsClassType = ({ classList }) => {
 	let title = '課程類別';
+	const id = 'class_type_id';
+	const name = 'class_type_name';
+
+	let cl = JSON.parse(classList);
+	let state = objectFlat(cl, id, 'is_delete');
 	return (
 		<Card>
 			<CardHeader subheader={`${title}管理`} title={title} />
 			<Divider />
-			<CardContent></CardContent>
-			<Divider />
-			<Box
-				sx={{
-					display: 'flex',
-					justifyContent: 'flex-end',
-					p: 2,
-				}}>
-				<Button color='primary' variant='contained'>
-					Update
-				</Button>
-			</Box>
+			<CardContent>
+				<CommonDataGrid
+					switchState={state}
+					label={title}
+					id={id}
+					name={name}
+					delFn={deletedClassType}
+					updateFn={updatedClassType}
+					createFn={createdClassType}
+					list={cl}
+				/>
+			</CardContent>
 		</Card>
 	);
 };

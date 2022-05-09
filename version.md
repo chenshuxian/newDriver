@@ -23,3 +23,9 @@ modules 優化
 const SQL = `SELECT max(user_stu_num) as user_stu_name, train_period_name FROM users right join train_book as tb on tb.train_book_id = users.train_book_id inner join train_period as tp on tp.train_period_id = tb.train_period_id where tb.train_period_id = '${trainPeriodId}' and source_id = '${sourceId}' <=== add group by train_period_name;`;
 
 libs/front/user getStudentNumber
+
+20220408
+
+新增教師管理
+修改一般使用者也可以登入管理頁面的bug
+新增設定頁面
