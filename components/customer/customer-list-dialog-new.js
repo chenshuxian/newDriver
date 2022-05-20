@@ -43,7 +43,7 @@ export default function NewFormDialog(props) {
 		submittedValues,
 		data,
 		setRows,
-		source_id
+		source_id,
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
@@ -230,6 +230,7 @@ export default function NewFormDialog(props) {
 			train_period_start,
 			train_period_exam,
 			train_period_name,
+			max_book_num,
 			user_born_mg,
 			is_delete,
 			score,

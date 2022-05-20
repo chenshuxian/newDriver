@@ -1,30 +1,35 @@
+import { Card, CardHeader, Divider, CardContent } from '@mui/material';
+import { objectFlat } from '../../libs/common';
+import { CommonDataGrid } from './commonDataGrid';
 import {
-	Box,
-	Card,
-	CardHeader,
-	Divider,
-	CardContent,
-	Button,
-} from '@mui/material';
+	deletedSource,
+	createdSource,
+	updatedSource,
+} from '../../libs/front/source';
 
-const SettingsSource = () => {
-	let title = '報名來源';
+const SettingsSource = ({ sourceList }) => {
+	const title = '報名來源';
+	const id = 'source_id';
+	const name = 'source_name';
+
+	let cl = JSON.parse(sourceList);
+	let state = objectFlat(cl, id, 'is_delete');
 	return (
 		<Card>
 			<CardHeader subheader={`${title}管理`} title={title} />
 			<Divider />
-			<CardContent></CardContent>
-			<Divider />
-			<Box
-				sx={{
-					display: 'flex',
-					justifyContent: 'flex-end',
-					p: 2,
-				}}>
-				<Button color='primary' variant='contained'>
-					Update
-				</Button>
-			</Box>
+			<CardContent>
+				<CommonDataGrid
+					switchState={state}
+					label={title}
+					id={id}
+					name={name}
+					delFn={deletedSource}
+					updateFn={updatedSource}
+					createFn={createdSource}
+					list={cl}
+				/>
+			</CardContent>
 		</Card>
 	);
 };

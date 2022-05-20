@@ -1,12 +1,16 @@
 import { useCallback, useState, useEffect } from 'react';
 import { Box } from '@mui/system';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
-import { Clear, Search, Delete, Edit } from '@mui/icons-material';
+import { FolderSpecial, Delete, Edit } from '@mui/icons-material';
 import NewFormDialog from './customer-list-dialog-new';
 import axios from 'axios';
 import { CustomerListToolbar } from './customer-list-toolbar';
 import { getToday, getFirstId } from '../../libs/common';
-import { getStudentNumber, deletedUser } from '../../libs/front/user';
+import {
+	getStudentNumber,
+	deletedUser,
+	getWordTemp,
+} from '../../libs/front/user';
 import { getBookTime } from '../../libs/front/trainBook';
 import CommonSnackBar from '../../components/CommonSnackBar';
 import { requestSearch, QuickSearchToolbar } from '../DataGridFunction';
@@ -108,6 +112,15 @@ export const CustomerListResults = ({ data }) => {
 		[]
 	);
 
+	const contract = (row) => {
+		row.class_type_name = data.classType[row.class_type_id];
+		row.car_type_name = data.carType[row.car_type_id];
+		row.user_born = getToday(1, row.user_born);
+		row.user_gender = data.gender[row.user_gender];
+		getWordTemp(row, 'contract');
+		getWordTemp(row, 'record');
+	};
+
 	const columns = [
 		{ field: 'train_period_name', headerName: '期別' },
 		{ field: 'user_stu_num', headerName: '學號' },
@@ -155,6 +168,11 @@ export const CustomerListResults = ({ data }) => {
 					icon={<Edit />}
 					label='Edit'
 					onClick={editUser(params.row)}
+				/>,
+				<GridActionsCellItem
+					icon={<FolderSpecial />}
+					label='contract'
+					onClick={() => contract(params.row)}
 				/>,
 			],
 		},

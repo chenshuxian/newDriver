@@ -18,4 +18,4 @@ const getBookId = (tpId, tId, time_id) => {
     });
 }
 
-export { getBookTime, getBookId}
+export { getBookTime, getBookId }

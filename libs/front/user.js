@@ -4,7 +4,9 @@ const URL = '/api/user';
 
 const getStudentNumber = async (tpId, sId) => {
 	try {
-		const res = await axios.get(`${URL}/stuNum?trainPeriodId=${tpId}&sourceId=${sId}`);
+		const res = await axios.get(
+			`${URL}/stuNum?trainPeriodId=${tpId}&sourceId=${sId}`
+		);
 		return res.data.studentNumber;
 	} catch (e) {
 		return console.log(`loadExamErr: ${e}`);
@@ -16,7 +18,7 @@ const createdUser = async (data) => {
 		const res = await axios.post(`${URL}`, data);
 		return res;
 	} catch (e) {
-		return window.alert('新增失敗請與管理員連絡');
+		return e.response ;
 	}
 };
 
@@ -53,4 +55,21 @@ const createCsv = (trainPeriodId, setDisabled) => {
 		});
 };
 
-export { getStudentNumber, createdUser, updatedUser, deletedUser, createCsv };
+const getWordTemp = async (data, file_name) => {
+	data.file_name = file_name;
+	try {
+		const res = await axios.post(`${URL}/wordTemp`, data);
+		return res;
+	} catch (e) {
+		return window.alert('取得檔案失敗請與管理員連絡');
+	}
+};
+
+export {
+	getStudentNumber,
+	createdUser,
+	updatedUser,
+	deletedUser,
+	createCsv,
+	getWordTemp,
+};

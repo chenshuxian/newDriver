@@ -8,7 +8,7 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  * tags:
  *   - name: user
  *     description: The user
- * 
+ *
  * definitions:
  *   user:
  *     type: object
@@ -57,11 +57,11 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *         description: The payment_date time
  *         example: 2021-10-03T03:00:03.000Z
  *       user_payment:
- *         type: int 
+ *         type: int
  *         description: 付款金額
  *         example: 13000
  *       user_memo:
- *         type: int 
+ *         type: int
  *         description: memo
  *         example: 21312421490u90jasdfji
  *       class_type_id:
@@ -109,7 +109,7 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *   schemas:
  *     user:
  *       $ref: '#/definitions/user'
- * 
+ *
  * /api/user:
  *   get:
  *     tags:
@@ -131,7 +131,7 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *         required: false
  *         schema:
  *           type: integer
- *       - name: limit 
+ *       - name: limit
  *         in: query
  *         description: limit
  *         required: false
@@ -163,74 +163,74 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  *             schema:
  *               $ref: '#/definitions/user'
  */
-export default async(req, res) => {
-  const {
-    query: { isDelete, offset, limit },
-    body: userData,
-    method
-  } = req
+export default async (req, res) => {
+	const {
+		query: { isDelete, offset, limit },
+		body: userData,
+		method,
+	} = req;
 
-  let user;
-  let total;
-  switch (method) {
-    case 'GET':
-      let filter;
-      let pagination;
+	let user;
+	let total;
+	switch (method) {
+		case 'GET':
+			let filter;
+			let pagination;
 
-      // if (!await isLogin(req)) {
-      //   res.status(401).json(errorCode.Unauthorized);
-      //   return;
-      // }
+			// if (!await isLogin(req)) {
+			//   res.status(401).json(errorCode.Unauthorized);
+			//   return;
+			// }
 
-      if (isDelete !== undefined) {
-        filter = { is_delete: isDelete === 'true' ? true : false };
-      }
+			if (isDelete !== undefined) {
+				filter = { is_delete: isDelete === 'true' ? true : false };
+			}
 
-      if (offset || limit) {
-        pagination = { offset, limit };
-      }
+			if (offset || limit) {
+				pagination = { offset, limit };
+			}
 
-      try {
-        ({ user, total } = await getUser(filter, pagination));
-      } catch (e) {
-        res.status(e.statusCode).json(e);
-        return;
-      }
-      
-      if (user) {
-        res.status(200).json({ userList: user, total });
-        return;
-      }
-      break
-    case 'POST':
-      // if (!await isAdmin(req)) {
-      //   res.status(401).json(errorCode.Unauthorized);
-      //   return;
-      // }
+			try {
+				({ user, total } = await getUser(filter, pagination));
+			} catch (e) {
+				res.status(e.statusCode).json(e);
+				return;
+			}
 
-      if (!userData) {
-        res.status(400).json(errorCode.BadRequest)
-        return;
-      }
+			if (user) {
+				res.status(200).json({ userList: user, total });
+				return;
+			}
+			break;
+		case 'POST':
+			// if (!await isAdmin(req)) {
+			//   res.status(401).json(errorCode.Unauthorized);
+			//   return;
+			// }
 
-      console.log(`user: ${userData}`);
-      try {
-        user = await createUser(userData);
-      } catch (e) {
-        res.status(e.statusCode).json(e);
-        return;
-      }
+			if (!userData) {
+				res.status(400).json(errorCode.BadRequest);
+				return;
+			}
 
-      if (user) {
-        res.status(201).json(user);
-        return;
-      }
-      break
-    default:
-      res.setHeader('Allow', ['GET', 'POST']);
-      res.status(405).json(errorCode.MethodNotAllowed);
-      return;
-  }
+			console.log(`user: ${userData}`);
+			try {
+				user = await createUser(userData);
+			} catch (e) {
+				res.status(e.statusCode).json(e);
+				return;
+			}
 
-  res.status(500).json(errorCode.InternalServerError);
+			if (user) {
+				res.status(201).json(user);
+				return;
+			}
+			break;
+		default:
+			res.setHeader('Allow', ['GET', 'POST']);
+			res.status(405).json(errorCode.MethodNotAllowed);
+			return;
+	}
+
+	res.status(500).json(errorCode.InternalServerError);
 };

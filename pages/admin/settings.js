@@ -5,11 +5,13 @@ import {
 	SettingsCarType,
 	SettingsClassType,
 	SettingsPeriod,
+	SettingsSource,
 } from '../../components/settings/';
 
 import { getTime } from '../../libs/time';
 import { getCarType } from '../../libs/carType';
 import { getClassType } from '../../libs/classType';
+import { getSource } from '../../libs/source';
 
 const Settings = ({ data }) => (
 	<>
@@ -30,11 +32,11 @@ const Settings = ({ data }) => (
 					<Grid item xs={12} md={6}>
 						<SettingsCarType carList={data.carList} />
 					</Grid>
-					<Grid item xs={6}>
+					<Grid item xs={12} md={6}>
 						<SettingsClassType classList={data.classList} />
 					</Grid>
-					<Grid item xs={6}>
-						<SettingsPeriod />
+					<Grid item xs={12} md={6}>
+						<SettingsSource sourceList={data.sourceList} />
 					</Grid>
 				</Grid>
 			</Container>
@@ -56,9 +58,13 @@ export async function getServerSideProps(context) {
 	let classType = await getClassType();
 	let classList = JSON.stringify(classType.classType);
 
+	let source = await getSource();
+	let sourceList = JSON.stringify(source.source);
+
 	data.timeList = timeList;
 	data.carList = carList;
 	data.classList = classList;
+	data.sourceList = sourceList;
 
 	if (!data) {
 		return {

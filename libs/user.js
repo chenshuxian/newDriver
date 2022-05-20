@@ -2,6 +2,8 @@ import prisma from './prisma';
 import errorCode from './errorCode';
 import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
+import { getTrainBookIdForBook } from '../libs/trainBook';
+import { getTrainPeriodLimit } from './trainPeriod';
 
 dayjs.extend(isToday);
 
@@ -113,8 +115,28 @@ const getUserCount = async function (filter) {
 };
 
 const createUser = async function (data) {
-	let user;
-	console.log(`create user err: ${data}`);
+	let user, trainBookData, count;
+	let id = data.train_period_id;
+	let userId = data.user_id;
+	let limit = await getTrainPeriodLimit(id);
+	let isAccount = await checkUser(userId);
+
+	if (isAccount) {
+		throw errorCode.PrimaryKeyError;
+	}
+
+	if (data.privacy) {
+		trainBookData = await getTrainBookIdForBook(id);
+		data.train_book_id = trainBookData.train_book_id;
+		count = trainBookData.count;
+		delete data.privacy;
+		delete data.train_period_id;
+	}
+
+	if (count > limit) {
+		throw errorCode.QuotaExceeded;
+	}
+
 	try {
 		user = await prisma.users.create({
 			data,
@@ -123,6 +145,16 @@ const createUser = async function (data) {
 		console.log(`create user err: ${e}`);
 		throw errorCode.InternalServerError;
 	}
+
+	return user;
+};
+
+const checkUser = async function (user_id) {
+	let user = await prisma.users.findUnique({
+		where: {
+			user_id,
+		},
+	});
 
 	return user;
 };

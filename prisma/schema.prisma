@@ -16,7 +16,7 @@ model exam {
   exam_img_url String?  @db.VarChar(150)
   create_time  DateTime @default(now()) @db.Timestamp(0)
   update_time  DateTime @default(now()) @db.Timestamp(0)
-  is_delete    Boolean?    @default(false)
+  is_delete    Int      @default(0) @db.TinyInt
 }
 
 model fixStore {
@@ -92,13 +92,11 @@ model users {
   is_delete         Boolean?    @default(false)
   car_type          car_type?   @relation(fields: [car_type_id], references: [car_type_id], onDelete: NoAction, onUpdate: NoAction, map: "car_type_id_fk")
   class_type        class_type? @relation(fields: [class_type_id], references: [class_type_id], onDelete: NoAction, onUpdate: NoAction, map: "class_type_id_fk")
-  post_code         post_code?  @relation(fields: [post_code_id], references: [post_code_id], onDelete: NoAction, onUpdate: NoAction, map: "post_code_id_fk")
   source            source?     @relation(fields: [source_id], references: [source_id], onDelete: NoAction, onUpdate: NoAction, map: "source_id_fk")
   train_book        train_book? @relation(fields: [train_book_id], references: [train_book_id], onDelete: NoAction, onUpdate: NoAction, map: "train_book_id")
 
   @@index([car_type_id], map: "car_type_id_fk_idx")
   @@index([class_type_id], map: "class_type_id_fk_idx")
-  @@index([post_code_id], map: "post_code_id_fk_idx")
   @@index([source_id], map: "source_id_fk_idx")
   @@index([train_book_id], map: "train_book_id_idx")
 }
@@ -128,7 +126,6 @@ model post_code {
   create_time    DateTime? @default(now()) @db.Timestamp(0)
   update_time    DateTime? @default(now()) @db.Timestamp(0)
   is_delete      Boolean?  @default(false)
-  users          users[]
 }
 
 model time {
@@ -140,21 +137,28 @@ model time {
 }
 
 model train_period {
-  train_period_id    String?   @default(uuid()) @db.VarChar(36)
-  train_period_name  String    @id @db.VarChar(12)
-  train_period_start String?   @db.VarChar(50)
-  train_period_end   String?   @db.VarChar(50)
-  train_period_exam  String?   @db.VarChar(50)
-  create_time        DateTime? @default(now()) @db.Timestamp(0)
-  update_time        DateTime? @default(now()) @db.Timestamp(0)
+  train_period_id    String?     @default(uuid()) @db.VarChar(36)
+  train_period_name  String      @id @db.VarChar(12)
+  train_period_start String?     @db.VarChar(50)
+  train_period_end   String?     @db.VarChar(50)
+  train_period_exam  String?     @db.VarChar(50)
+  create_time        DateTime?   @default(now()) @db.Timestamp(0)
+  update_time        DateTime?   @default(now()) @db.Timestamp(0)
+  class_type_id      String?     @db.VarChar(36)
+  max_book_num       Int?        @default(40)
+  is_delete          Boolean?    @default(false)
+  class_type         class_type? @relation(fields: [class_type_id], references: [class_type_id], onDelete: NoAction, onUpdate: NoAction, map: "class_type_id_fk_1")
+
+  @@index([class_type_id], map: "class_type_id_fk_1")
 }
 
 model class_type {
-  class_type_id   String    @id @unique(map: "class_type_id_UNIQUE") @db.VarChar(36)
-  class_type_name String?   @db.VarChar(12)
-  create_time     DateTime? @default(now()) @db.Timestamp(0)
-  update_time     DateTime? @default(now()) @db.Timestamp(0)
-  is_delete       Boolean?  @default(false)
+  class_type_id   String         @id @unique(map: "class_type_id_UNIQUE") @db.VarChar(36)
+  class_type_name String?        @db.VarChar(12)
+  create_time     DateTime?      @default(now()) @db.Timestamp(0)
+  update_time     DateTime?      @default(now()) @db.Timestamp(0)
+  is_delete       Boolean?       @default(false)
+  train_period    train_period[]
   users           users[]
 }
 
