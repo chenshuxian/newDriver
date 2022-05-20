@@ -112,13 +112,9 @@ export const CustomerListResults = ({ data }) => {
 		[]
 	);
 
-	const contract = (row) => {
-		row.class_type_name = data.classType[row.class_type_id];
-		row.car_type_name = data.carType[row.car_type_id];
-		row.user_born = getToday(1, row.user_born);
-		row.user_gender = data.gender[row.user_gender];
-		getWordTemp(row, 'contract');
-		getWordTemp(row, 'record');
+	const contract = async (row) => {
+		let url = await getWordTemp(row.user_id);
+		location.href = `/word/${url.data.url}`;
 	};
 
 	const columns = [

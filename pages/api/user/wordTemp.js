@@ -1,23 +1,23 @@
-import { wordTemplate } from '../../../libs/wordTemplate';
+import { getContractData } from '../../../libs/user';
 import errorCode from '../../../libs/errorCode';
+import { wordTemplate } from '../../../libs/wordTemplate';
 
 export default async (req, res) => {
-	let wordTemp;
-	const { body: userData } = req;
+	let wordTemp, data;
+	const {
+		query: { userId },
+	} = req;
 
-	if (req.method !== 'POST') {
-		res.setHeader('Allow', ['POST']);
+	if (req.method !== 'GET') {
+		res.setHeader('Allow', ['GET']);
 		res.status(405).json(errorCode.MethodNotAllowed);
 		return;
 	}
 
-	if (!userData) {
-		res.status(400).json(errorCode.BadRequest);
-		return;
-	}
-
 	try {
-		wordTemp = await wordTemplate(userData);
+		[data] = await getContractData(userId);
+		data.user_gender = data.user_gender == 1 ? '男' : '女';
+		wordTemp = await wordTemplate(data);
 	} catch (e) {
 		console.log(`wordTemp err: ${e}`);
 		res.status(e.statusCode).json(e);
@@ -25,7 +25,7 @@ export default async (req, res) => {
 	}
 
 	if (wordTemp) {
-		res.status(200).json({ status: wordTemp });
+		res.status(200).json({ url: wordTemp });
 		return;
 	}
 

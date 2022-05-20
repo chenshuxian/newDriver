@@ -55,10 +55,9 @@ const createCsv = (trainPeriodId, setDisabled) => {
 		});
 };
 
-const getWordTemp = async (data, file_name) => {
-	data.file_name = file_name;
+const getWordTemp = async (userId) => {
 	try {
-		const res = await axios.post(`${URL}/wordTemp`, data);
+		const res = await axios.get(`${URL}/wordTemp?userId=${userId}`);
 		return res;
 	} catch (e) {
 		return window.alert('取得檔案失敗請與管理員連絡');

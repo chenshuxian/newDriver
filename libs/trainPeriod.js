@@ -47,8 +47,8 @@ const getAllowPeriod = async function (carType, classType, month) {
 	let today = await getToday(true);
 	today = today.replaceAll('-', '/');
 
-	let SQL = `SELECT * ,max_book_num - (SELECT count(*) FROM driver.train_book where train_period_id = train_period.train_period_id and
-	train_book_id in (select train_book_id from driver.users where train_book_id is not null)) as count FROM train_period where train_period_start > '${today}'`;
+	let SQL = `SELECT * ,max_book_num - (SELECT count(*) FROM train_book where train_period_id = train_period.train_period_id and
+	train_book_id in (select train_book_id from users where train_book_id is not null)) as count FROM train_period where train_period_start > '${today}'`;
 	trian_period = await prisma.$queryRawUnsafe(SQL);
 
 	return trian_period;

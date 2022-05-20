@@ -215,6 +215,20 @@ const deleteUser = async function (user_uuid) {
 	return user;
 };
 
+const getContractData = async function (userId) {
+	let constractData;
+	let SQL = `select user_name, user_stu_num, user_id, substr(user_born,1,10) as user_born, user_tel, user_email, user_gender, user_addr, class_type_name, 
+	car_type_name, train_period_name, train_period_start, train_period_end  from users
+	inner join class_type as ct on ct.class_type_id = users.class_type_id
+	inner join car_type as cr on cr.car_type_id = users.car_type_id
+	inner join train_book as tb on tb.train_book_id = users.train_book_id
+	inner join train_period as tp on tp.train_period_id = tb.train_period_id
+	where user_id = '${userId}'`;
+
+	constractData = await prisma.$queryRawUnsafe(SQL);
+
+	return constractData;
+};
 export {
 	getUser,
 	getUserByCredentials,
@@ -223,4 +237,5 @@ export {
 	getUserById,
 	updateUser,
 	deleteUser,
+	getContractData,
 };

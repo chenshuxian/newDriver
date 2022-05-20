@@ -16,7 +16,7 @@ model exam {
   exam_img_url String?  @db.VarChar(150)
   create_time  DateTime @default(now()) @db.Timestamp(0)
   update_time  DateTime @default(now()) @db.Timestamp(0)
-  is_delete    Int      @default(0) @db.TinyInt
+  is_delete    Boolean?    @default(false)
 }
 
 model fixStore {

@@ -1,5 +1,6 @@
-const PizZip = require('pizzip');
-const Docxtemplater = require('docxtemplater');
+import Docxtemplater from 'docxtemplater';
+import PizZip from 'pizzip';
+// import PizZipUtils from 'pizzip/utils/index.js';
 
 const fs = require('fs');
 const path = require('path');
@@ -11,9 +12,11 @@ import { WEBTITLE } from './front/constText';
 export const wordTemplate = async function (data) {
 	data.today = getToday();
 	data.school_name = WEBTITLE;
-	let result;
+	let type = data.train_period_name.substr(-1);
+	let fileName = `${data.user_name}_${data.user_id}.docx`;
+
 	const content = fs.readFileSync(
-		path.resolve(`static/word/${data.file_name}.docx`),
+		path.resolve(`static/word/contract_${type}.docx`),
 		'binary'
 	);
 
@@ -37,11 +40,8 @@ export const wordTemplate = async function (data) {
 	// buf is a nodejs Buffer, you can either write it to a
 	// file or res.send it with express for example.
 	try {
-		fs.writeFileSync(
-			path.resolve(`static/word/${data.user_id}_${data.file_name}.docx`),
-			buf
-		);
-		return '檔案產生成功';
+		fs.writeFileSync(path.resolve(`static/word/${fileName}`), buf);
+		return `${fileName}`;
 	} catch (e) {
 		console.log(`write file err ==================== ${e}`);
 		return '檔案產生失敗';
