@@ -68,7 +68,7 @@ export const TeacherForm = (props) => {
 			setRows((prevRows) => {
 				let newRows = [...prevRows];
 				let data = result.data.teacher;
-				console.log(`setRows add : ${JSON.stringify(data)}`);
+				// console.log(`setRows add : ${JSON.stringify(data)}`);
 				newRows.unshift(data);
 				return newRows;
 			});

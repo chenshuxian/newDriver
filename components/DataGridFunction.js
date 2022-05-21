@@ -13,7 +13,7 @@ const requestSearch = (searchValue, setRows, setSearchText, totalRows) => {
 	const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
 	const filteredRows = totalRows.filter((row) => {
 		return Object.keys(row).some((field) => {
-			console.log(typeof row[field] === 'string');
+			// console.log(typeof row[field] === 'string');
 			return searchRegex.test(
 				typeof row[field] === 'string' ? row[field].toString() : row[field]
 			);
