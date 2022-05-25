@@ -17,6 +17,10 @@ const objectFlat = (arr, key, value) => {
 	return b;
 };
 
+const getKeyByValue = (object, value) => {
+	return Object.keys(object).find(key => object[key] === value);
+  }
+
 const objectAutoComp = (arr, key, value) => {
 	let newA;
 	newA = arr.map((c) => {
@@ -82,4 +86,5 @@ export {
 	getFirstId,
 	strToDate,
 	download,
+	getKeyByValue
 };

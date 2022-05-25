@@ -7,7 +7,7 @@ import { merge, map } from 'lodash';
 const fs = require('fs');
 const path = require('path');
 import { getToday } from './common';
-import { WEBTITLE } from './front/constText';
+import { INVOICENUMBER, WEBTITLE } from './front/constText';
 import {
 	nextSaturday,
 	nextTuesday,
@@ -87,11 +87,12 @@ export const wordTemplate = async function (data) {
 	let startDay = data.train_period_start;
 	data.today = getToday();
 	data.school_name = WEBTITLE;
+	data.invoice_title = INVOICENUMBER;
 	data.xd = getXuDate(startDay, 5);
 	data.sd = getSuDate(startDay, 24);
 
 	const content = fs.readFileSync(
-		path.resolve(`static/word/contract_${type}.docx`),
+		path.resolve(`static/word/contract.docx`),
 		'binary'
 	);
 

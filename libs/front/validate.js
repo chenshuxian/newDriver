@@ -1,3 +1,5 @@
+import { isAfter, subYears } from 'date-fns';
+
 const teacherValidate = (values) => {
 	const errors = {};
 
@@ -55,6 +57,9 @@ const userValidate = (values) => {
 const bookValidate = (values) => {
 	const errors = {};
 
+	const eighteen = subYears(new Date(), 18);
+	console.log(`eighteen: ${eighteen}`);
+
 	if (!values.user_id) {
 		errors.user_id = '身分證不可為空';
 	} else if (!values.user_id.match('^[a-zA-Z][a-zA-Z0-9]\\d{8}$')) {
@@ -65,6 +70,12 @@ const bookValidate = (values) => {
 		errors.user_tel = 'Required';
 	} else if (isNaN(values.user_tel)) {
 		errors.user_tel = '電話號碼只能為數字';
+	}
+
+	if (!values.user_born) {
+		errors.user_born = 'Required';
+	} else if (isAfter(new Date(values.user_born), eighteen)) {
+		errors.user_born = '報考年齡需太於18歲';
 	}
 
 	if (!values.user_name) {

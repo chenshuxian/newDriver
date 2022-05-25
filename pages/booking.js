@@ -43,14 +43,12 @@ const Booking = ({ data }) => {
 	const [snackOpen, setSnackOpen] = useState(false);
 	const [msg, setMsg] = useState();
 
-	const user_born = getToday();
 	const class_type_id = '47398668-5967-11ec-a655-528abe1c4f3a';
 	const user_gender = '1';
 	const car_type_id = Object.keys(data.carType).toString();
 	const model_title = `個人資料填寫`;
 
 	const initialValues = {
-		user_born,
 		class_type_id,
 		user_gender,
 		car_type_id,
@@ -151,7 +149,12 @@ const Booking = ({ data }) => {
 		},
 		{ name: 'user_name', label: '姓名', type: 'text', xs: 4, required: true },
 
-		{ name: 'user_born', label: '出生年月', type: 'date', xs: 6 },
+		{
+			name: 'user_born',
+			type: 'date',
+			xs: 6,
+			required: true,
+		},
 		{
 			name: 'user_tel',
 			label: '電話',
@@ -205,9 +208,8 @@ const Booking = ({ data }) => {
 						<CardContent>
 							<Grid container alignItems='center' spacing={2}>
 								{buttonList.map((o, i) => (
-									<Grid item md={6}>
+									<Grid item md={6} key={o['train_period_id']}>
 										<Button
-											key={o['train_period_id']}
 											sx={{ minWidth: '100%', minHeight: 60, fontSize: 18 }}
 											variant='contained'
 											endIcon={<EventNote fontSize='large' />}

@@ -9,10 +9,10 @@ import {
 import { Form, Field } from 'react-final-form';
 import { createTheme } from '@mui/material/styles';
 import { createStyles, makeStyles } from '@mui/styles';
-import { createdUser, getStudentNumber } from '../../libs/front/user';
 import { OnBlur } from 'react-final-form-listeners';
 import { CHECKBOX, SELECTFIELD, TEXTFIELD } from '../formItem';
 import CommonSnackBar from '../../components/CommonSnackBar';
+import { getKeyByValue } from '../../libs/common';
 
 const defaultTheme = createTheme();
 const useStyles = makeStyles(
@@ -66,6 +66,14 @@ export default function FormDialog(props) {
 		});
 	};
 
+	const userAddrOnBlur = async (value, form, values) => {
+		console.log(`addr: ${values.user_addr.substr(0, 6)}`);
+		form.reset({
+			...values,
+			post_code_id: getKeyByValue(postCode, values.user_addr.substr(0, 6)),
+		});
+	};
+
 	return (
 		<div>
 			<Dialog open={open} onClose={handleClose}>
@@ -90,7 +98,9 @@ export default function FormDialog(props) {
 								<OnBlur name='user_id'>
 									{async (value) => userIdOnBlur(value, form, values)}
 								</OnBlur>
-
+								<OnBlur name='user_addr'>
+									{async (value) => userAddrOnBlur(value, form, values)}
+								</OnBlur>
 								<Grid
 									container
 									alignItems='center'
