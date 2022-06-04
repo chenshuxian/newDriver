@@ -15,6 +15,7 @@ import {
 	createdUser,
 	updatedUser,
 	getStudentNumber,
+	getUserById,
 } from '../../libs/front/user';
 import { userValidate } from '../../libs/front/validate';
 import { OnBlur, OnChange } from 'react-final-form-listeners';
@@ -60,6 +61,7 @@ export default function NewFormDialog(props) {
 	// const source_id = '0641e268-5967-11ec-a655-528abe1c4f3a';
 	const user_gender = '1';
 	const model_title = `會員資料管理 - ${submittedValues ? '修改' : '新增'}`;
+	let ADD = false;
 	let train_period_id = data.thisPeriod;
 	let teacher_id = getFirstId(data.teacher);
 	let train_period_start = '';
@@ -76,6 +78,7 @@ export default function NewFormDialog(props) {
 		train_period_exam =
 			trainPeriodDetail[`${train_period_id}`].train_period_exam;
 		user_stu_num = studentNumber;
+		ADD = true;
 	} else {
 		//提供修改登入時取得時間數據
 		train_period_id = submittedValues.train_period_id;
@@ -220,7 +223,7 @@ export default function NewFormDialog(props) {
 	};
 
 	const onSubmit = async (values, form) => {
-		const ADD = submittedValues === undefined ? true : false;
+		// const ADD = submittedValues === undefined ? true : false;
 		// 刪除不必要資訊
 		let {
 			teacher_id,
@@ -383,10 +386,33 @@ export default function NewFormDialog(props) {
 			user_gender = '2';
 		}
 
-		form.reset({
-			...values,
-			user_gender,
-		});
+		// checkUser is already
+		let user = await getUserById(values.user_id);
+		if (!user?.data) {
+			console.log(`checkuser: ${JSON.stringify(user?.data)}`);
+
+			ADD = false;
+			form.reset({
+				...values,
+				user_addr: user.user_addr,
+				user_tel: user.user_tel,
+				user_email: user.user_email,
+				post_code_id: user.post_code_id,
+				user_name: user.user_name,
+				user_uuid: user.user_uuid,
+				user_gender,
+			});
+
+			form.reset({
+				...values,
+				user_born: user.user_born.substr(0, 10),
+			});
+		} else {
+			form.reset({
+				...values,
+				user_gender,
+			});
+		}
 	};
 
 	const onReset = (f, v) => {

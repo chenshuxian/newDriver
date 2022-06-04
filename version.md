@@ -39,3 +39,11 @@ libs/front/user getStudentNumber
 
 1110521
 合約及報名表完成
+
+1110525
+修改合約 template
+修改前端登入資料驗證
+
+1110604
+自手排 bug 修正自排 A 手排 M
+管理端新增使用者沒有進行id確認

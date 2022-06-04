@@ -58,7 +58,7 @@ function getXuDate(start_day, num) {
 }
 
 function checkSuDate(d, i) {
-	console.log(d);
+	// console.log(d);
 	d = addDays(d, 1);
 	if ((i > 5 && isSaturday(d)) || isFriday(d) || (i < 10 && isTuesday(d))) {
 		return checkSuDate(d, i);
@@ -66,7 +66,7 @@ function checkSuDate(d, i) {
 		return d;
 	}
 }
-
+// 取得术科时间
 function getSuDate(start_day, num) {
 	let xd = new Array();
 	let days = start_day.split('/');
@@ -85,7 +85,7 @@ export const wordTemplate = async function (data) {
 	let type = data.train_period_name.substr(-1);
 	let fileName = `${data.user_name}_${data.user_id}.docx`;
 	let startDay = data.train_period_start;
-	data.today = getToday();
+	data.today = getToday(1);
 	data.school_name = WEBTITLE;
 	data.invoice_title = INVOICENUMBER;
 	data.xd = getXuDate(startDay, 5);

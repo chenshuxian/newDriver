@@ -63,10 +63,10 @@ async function addData(csvJson) {
 		);
 		// source map A
 		csvJson[i].source_name = 'A'; //當期為A
-		// car map type 自排 = A 手排 = B
+		// car map type 自排 = A 手排 = M
 		csvJson[i].car_type_name = csvJson[i].car_type_name.includes('自排')
 			? 'A'
-			: 'B';
+			: 'M';
 	}
 
 	return csvJson;
@@ -98,7 +98,7 @@ export const getCsvFile = async function (trainPeriodId) {
 		'user_email',
 	];
 	//开训名单
-	//[身分證字號10碼],[出生日期6~7碼],[姓名],[電話10碼],[學號7碼以下],A[來源 1 碼],A[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
+	//[身分證字號10碼],[出生日期6~7碼],[姓名],[電話10碼],[學號7碼以下],A[來源 1 碼],A/M[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
 	const startField = [
 		'user_id',
 		'user_born',
@@ -111,7 +111,7 @@ export const getCsvFile = async function (trainPeriodId) {
 		'teacher_born',
 	];
 	//结训名单
-	//[身分證字號 10 碼],[出生日期 6~7 碼],A[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
+	//[身分證字號 10 碼],[出生日期 6~7 碼],A/M[手自排 1 碼],[教練身分證字號 10 碼],[教練生日 6~7 碼]
 	const finishField = [
 		'user_id',
 		'user_born',

@@ -13,12 +13,21 @@ const getStudentNumber = async (tpId, sId) => {
 	}
 };
 
+const getUserById = async (id) => {
+	try {
+		const res = await axios.get(`${URL}/${id}`);
+		return res.data;
+	} catch (e) {
+		return e.response;
+	}
+};
+
 const createdUser = async (data) => {
 	try {
 		const res = await axios.post(`${URL}`, data);
 		return res;
 	} catch (e) {
-		return e.response ;
+		return e.response;
 	}
 };
 
@@ -71,4 +80,5 @@ export {
 	deletedUser,
 	createCsv,
 	getWordTemp,
+	getUserById,
 };
