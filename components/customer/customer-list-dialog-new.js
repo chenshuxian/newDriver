@@ -405,7 +405,7 @@ export default function NewFormDialog(props) {
 
 			form.reset({
 				...values,
-				user_born: user.user_born.substr(0, 10),
+				user_born: user.user_born?.substr(0, 10),
 			});
 		} else {
 			form.reset({
