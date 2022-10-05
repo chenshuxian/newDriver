@@ -301,7 +301,6 @@ export default function NewFormDialog(props) {
 				addRows(result);
 				confirm = window.confirm('新增完成,是否繼續');
 				if (confirm) {
-					ADD = true;
 					resetForm();
 				} else {
 					handleClose();
@@ -389,7 +388,7 @@ export default function NewFormDialog(props) {
 
 		// checkUser is already
 		let user = await getUserById(values.user_id);
-		if (!user?.data) {
+		if (!user?.data || typeof user.data !== undefined) {
 			console.log(`checkuser: ${JSON.stringify(user?.data)}`);
 
 			ADD = false;
