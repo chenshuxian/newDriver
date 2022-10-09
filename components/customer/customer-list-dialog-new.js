@@ -296,6 +296,7 @@ export default function NewFormDialog(props) {
 		};
 
 		if (ADD) {
+			delete submitData.user_uuid; //預防新增時出現user_uuid的bug
 			result = await createdUser(submitData);
 			if (result) {
 				addRows(result);
@@ -387,11 +388,13 @@ export default function NewFormDialog(props) {
 		}
 
 		// checkUser is already
-		let user = await getUserById(values.user_id);
-		if (!user?.data || typeof user.data !== undefined) {
-			console.log(`checkuser: ${JSON.stringify(user?.data)}`);
 
+		let user = await getUserById(values.user_id);
+		// console.log('checkuserout' + JSON.stringify(user));
+		if (!user?.data?.statusCode == '404' || user.user_id) {
+			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
 			ADD = false;
+			user_born = user.user_born?.substr(0, 10);
 			form.reset({
 				...values,
 				user_addr: user.user_addr,
@@ -405,9 +408,10 @@ export default function NewFormDialog(props) {
 
 			form.reset({
 				...values,
-				user_born: user.user_born?.substr(0, 10),
+				user_born,
 			});
 		} else {
+			ADD = true;
 			form.reset({
 				...values,
 				user_gender,
