@@ -45,7 +45,7 @@ const ExamPageToolbar = ({ userName }) => {
 						ml: 1,
 						cursor: 'pointer',
 					}}
-					onClick={() => signOut({ callbackUrl: 'http://kinmen.im:3000/' })}>
+					onClick={() => signOut({ redirect: false })}>
 					<LogoutIcon />
 				</Avatar>
 			</Toolbar>
