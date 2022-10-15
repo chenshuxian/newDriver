@@ -105,8 +105,8 @@ export const CustomerListResults = ({ data }) => {
 			const time = await getBookTime(trainPeriodId, teacherId);
 			if (time == null) {
 				console.log('time is null');
-				teacherId = await getFirstId(data.teacher, 1);
-				time = await getBookTime(trainPeriodId, teacherId);
+				let newTeacherId = await getFirstId(data.teacher, 1);
+				time = await getBookTime(trainPeriodId, newTeacherId);
 			}
 
 			setStudentNumber(stuNum);
