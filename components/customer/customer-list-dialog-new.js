@@ -35,7 +35,7 @@ const useStyles = makeStyles(
 );
 
 export default function NewFormDialog(props) {
-	const {
+	let {
 		handleClose,
 		open,
 		studentNumber,
