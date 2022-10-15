@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { objectFlat } from '../common';
+import { objectFlat, getFirstId } from '../common';
 
 const URL = '/api/trainBook';
 
@@ -12,13 +12,15 @@ const getBookTime = async (tpId = '', tId = '', user_id = '') => {
 		const res = await axios.get(
 			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
 		);
-		if (res?.data) {
-			return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
-		} else {
-			return null;
-		}
+		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
 	} catch (e) {
-		return console.log(`getBookTime err: ${e}`);
+		console.log(`getBookTime err: ${e}`);
+		// 抓取第二順位老師時間
+		tId = getFirstId(tId, 1);
+		const res = await axios.get(
+			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
+		);
+		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
 	}
 };
 
