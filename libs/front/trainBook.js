@@ -15,12 +15,7 @@ const getBookTime = async (tpId = '', tId = '', user_id = '') => {
 		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
 	} catch (e) {
 		console.log(`getBookTime err: ${e}`);
-		// 抓取第二順位老師時間
-		tId = await getFirstId(tId, 1);
-		const res = await axios.get(
-			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
-		);
-		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
+        return null;
 	}
 };
 

@@ -103,6 +103,11 @@ export const CustomerListResults = ({ data }) => {
 			let teacherId = await getFirstId(data.teacher);
 			const stuNum = await getStudentNumber(trainPeriodId, sourceId);
 			const time = await getBookTime(trainPeriodId, teacherId);
+			if (time == null) {
+				console.log('time is null');
+				teacherId = await getFirstId(data.teacher, 1);
+				time = await getBookTime(trainPeriodId);
+			}
 
 			setStudentNumber(stuNum);
 			setTrainTime(time);
@@ -113,7 +118,7 @@ export const CustomerListResults = ({ data }) => {
 	);
 
 	const contract = async (row) => {
-		let url = await getWordTemp(row.user_id);
+		let url = await getWordTemp(row.user_id, 'contract');
 		location.href = `/word/${url.data.url}`;
 	};
 
