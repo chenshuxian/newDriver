@@ -12,7 +12,11 @@ const getBookTime = async (tpId = '', tId = '', user_id = '') => {
 		const res = await axios.get(
 			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
 		);
-		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
+		if (res?.data) {
+			return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
+		} else {
+			return null;
+		}
 	} catch (e) {
 		return console.log(`getBookTime err: ${e}`);
 	}
