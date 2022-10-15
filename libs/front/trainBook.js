@@ -1,21 +1,31 @@
-import axios from "axios";
-import { objectFlat } from "../common";
+import axios from 'axios';
+import { objectFlat } from '../common';
 
 const URL = '/api/trainBook';
 
-const getBookTime = (tpId = '', tId = '', user_id = '') => {
-
-    return axios.get(`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
-    ).then(async function(res) {
-        return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
-    });
-}
+const getBookTime = async (tpId = '', tId = '', user_id = '') => {
+	// return axios.get(`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
+	// ).then(async function(res) {
+	//     return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
+	// });
+	try {
+		const res = await axios.get(
+			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
+		);
+		return objectFlat(res.data.trainBookList, 'time_id', 'time_name');
+	} catch (e) {
+		return console.log(`getBookTime err: ${e}`);
+	}
+};
 
 const getBookId = (tpId, tId, time_id) => {
-    return axios.get(`${URL}/bookId?train_period_id=${tpId}&teacher_id=${tId}&time_id=${time_id}`
-    ).then(async function(res) {
-        return res.data.trainBookId[0].train_book_id;
-    });
-}
+	return axios
+		.get(
+			`${URL}/bookId?train_period_id=${tpId}&teacher_id=${tId}&time_id=${time_id}`
+		)
+		.then(async function (res) {
+			return res.data.trainBookId[0].train_book_id;
+		});
+};
 
-export { getBookTime, getBookId }
+export { getBookTime, getBookId };
