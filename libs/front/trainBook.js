@@ -16,7 +16,7 @@ const getBookTime = async (tpId = '', tId = '', user_id = '') => {
 	} catch (e) {
 		console.log(`getBookTime err: ${e}`);
 		// 抓取第二順位老師時間
-		tId = getFirstId(tId, 1);
+		tId = await getFirstId(tId, 1);
 		const res = await axios.get(
 			`${URL}?trainPeriodId=${tpId}&teacherId=${tId}&userId=${user_id}`
 		);
