@@ -45,6 +45,7 @@ export default function NewFormDialog(props) {
 		data,
 		setRows,
 		source_id,
+		teacher_id
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
@@ -63,7 +64,7 @@ export default function NewFormDialog(props) {
 	const model_title = `會員資料管理 - ${submittedValues ? '修改' : '新增'}`;
 	let ADD = false;
 	let train_period_id = data.thisPeriod;
-	let teacher_id = getFirstId(data.teacher);
+	// let teacher_id = getFirstId(data.teacher);
 	let train_period_start = '';
 	let train_period_end = '';
 	let train_period_exam = '';

@@ -25,6 +25,7 @@ export const CustomerListResults = ({ data }) => {
 	const [submittedValues, setSubmittedValues] = useState(undefined);
 	const [studentNumber, setStudentNumber] = useState();
 	const [trainTime, setTrainTime] = useState();
+	const [teacherId, setTeacherId] = useState();
 	const trainPeriodDetail = JSON.parse(data.trainPeriodDetail);
 	let sourceId = '0641e268-5967-11ec-a655-528abe1c4f3a'; //當期
 
@@ -100,15 +101,15 @@ export const CustomerListResults = ({ data }) => {
 	const addUser = useCallback(
 		() => async () => {
 			let trainPeriodId = data.thisPeriod;
-			let teacherId = await getFirstId(data.teacher);
+			let tId = await getFirstId(data.teacher);
 			const stuNum = await getStudentNumber(trainPeriodId, sourceId);
-			const time = await getBookTime(trainPeriodId, teacherId);
+			const time = await getBookTime(trainPeriodId, tId);
 			if (time == null) {
 				console.log('time is null');
-				let newTeacherId = await getFirstId(data.teacher, 1);
-				time = await getBookTime(trainPeriodId, newTeacherId);
+				tId = await getFirstId(data.teacher, 1);
+				time = await getBookTime(trainPeriodId, tId);
 			}
-
+			setTeacherId(tId);
 			setStudentNumber(stuNum);
 			setTrainTime(time);
 			setSubmittedValues(undefined);
@@ -241,6 +242,7 @@ export const CustomerListResults = ({ data }) => {
 						setSubmittedValues={setSubmittedValues}
 						submittedValues={submittedValues}
 						source_id={sourceId}
+						teacher_id={teacherId}
 					/>
 					<CommonSnackBar
 						open={snackOpen}
