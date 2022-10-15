@@ -45,7 +45,7 @@ export default function NewFormDialog(props) {
 		data,
 		setRows,
 		source_id,
-		teacher_id
+		teacher_id,
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
@@ -362,7 +362,12 @@ export default function NewFormDialog(props) {
 
 	const teacherOnChange = async (value, form, values) => {
 		if (value !== '') {
-			setTrainTime(await getBookTime(values.train_period_id, value, user_id));
+			let time = await getBookTime(values.train_period_id, value, user_id);
+			if (time == null) {
+				window.alert(`${value} 已無時間可預約，請選其他教練`);
+			} else {
+				setTrainTime(time);
+			}
 		}
 	};
 
