@@ -18,8 +18,8 @@ const objectFlat = (arr, key, value) => {
 };
 
 const getKeyByValue = (object, value) => {
-	return Object.keys(object).find(key => object[key] === value);
-  }
+	return Object.keys(object).find((key) => object[key] === value);
+};
 
 const objectAutoComp = (arr, key, value) => {
 	let newA;
@@ -52,8 +52,8 @@ const getToday = (mi = false, day) => {
 	return `${y}-${m}-${d}`;
 };
 
-const getFirstId = (obj) => {
-	return Object.keys(obj)[0];
+const getFirstId = (obj, num = 0) => {
+	return Object.keys(obj)[num];
 };
 
 //1110112 => 111/01/12
@@ -86,5 +86,5 @@ export {
 	getFirstId,
 	strToDate,
 	download,
-	getKeyByValue
+	getKeyByValue,
 };
