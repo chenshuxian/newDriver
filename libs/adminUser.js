@@ -151,7 +151,6 @@ const getPasswordHash = function (password) {
 
 const getAdminByCredentials = async function (name, password) {
 	password = getPasswordHash(password);
-
 	let adminUser;
 	try {
 		adminUser = await prisma.admin.findFirst({

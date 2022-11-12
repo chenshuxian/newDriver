@@ -10,26 +10,52 @@ import {
 import { useState } from 'react';
 import { Article, CloudDownload } from '@mui/icons-material';
 import { download } from '../../libs/common';
-import { createCsv } from '../../libs/front/user';
+import { createCsv, getExamList } from '../../libs/front/user';
 
-export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
+export const CustomerListToolbar = ({
+	addUser,
+	trainPeriod,
+	thisPeriod,
+	selectedRows,
+	trainPeriodDetail,
+}) => {
 	const TITLE = '學員管理';
 	const BUTTON_ONE = '建立CSV';
 	const BUTTON_TWO = '下載CSV';
 	const BUTTON_THREE = '新增學員';
+	const BUTTON_FOUR = '學習記錄表';
+	const EXAM_LIST = '考照清冊';
 	const [period, setPeriod] = useState(thisPeriod);
+	const [periodName, setPeriodName] = useState();
+	const [periodExam, setPeriodExam] = useState();
 	const [disabled, setDisabled] = useState(true);
 	let url = `/static/download/`;
 
 	const handleChange = (event) => {
-		const durl = `/${trainPeriod[event.target.value]}.zip`;
+		const name = trainPeriodDetail[event.target.value].train_period_name;
+		const durl = `/${name}.zip`;
+		// console.log(trainPeriodDetail[event.target.value].train_period_exam);
 		setPeriod(event.target.value);
+		setPeriodName(trainPeriodDetail[event.target.value].train_period_name);
+		setPeriodExam(trainPeriodDetail[event.target.value].train_period_exam);
 		download(durl, setDisabled);
 	};
 
 	const createCSV = () => {
 		//console.log(`createcsv : ${period}`)
 		createCsv(period, setDisabled);
+	};
+
+	const downExamList = async () => {
+		let data = {
+			per: period,
+			perName: periodName,
+			perExam: periodExam,
+			list: selectedRows,
+		};
+		console.log(`getExamList: ${JSON.stringify(data)}`);
+		let name = await getExamList(data);
+		location.href = `/download/${name}.zip`;
 	};
 
 	return (
@@ -76,6 +102,15 @@ export const CustomerListToolbar = ({ addUser, trainPeriod, thisPeriod }) => {
 						}
 						disabled={disabled}>
 						{BUTTON_TWO}
+					</Button>
+					<Button startIcon={<CloudDownload fontSize='small' />} sx={{ mr: 1 }}>
+						{BUTTON_FOUR}
+					</Button>
+					<Button
+						startIcon={<CloudDownload fontSize='small' />}
+						onClick={downExamList}
+						sx={{ mr: 1 }}>
+						{EXAM_LIST}
 					</Button>
 					<Button
 						color='primary'

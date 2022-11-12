@@ -6,6 +6,15 @@ import { COMPANY } from '../libs/front/constText';
 const defaultPath = ['static', 'download'];
 const DOWNLOADPATH = path.join(process.cwd(), ...defaultPath);
 
+const pureMakeFile = (fileName) => {
+	const folder = `${DOWNLOADPATH}/${fileName}`;
+	if (!existsSync(folder)) {
+		mkdir(folder, '0777', (err) => {
+			if (err) throw err;
+		});
+	}
+};
+
 const makeFile = (fileName, data, format, type) => {
 	const folder = `${DOWNLOADPATH}/${fileName}`;
 	const file = `${folder}/${COMPANY}${fileName}_${type}.csv`;
@@ -48,4 +57,4 @@ const checkFile = (fileName) => {
 	return false;
 };
 
-export { makeFile, zipFile, checkFile };
+export { makeFile, zipFile, checkFile, pureMakeFile };

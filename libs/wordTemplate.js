@@ -2,6 +2,7 @@ import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 import expressions from 'angular-expressions';
 import { merge, map } from 'lodash';
+import { createTemplate } from './createTemp';
 // import PizZipUtils from 'pizzip/utils/index.js';
 
 const fs = require('fs');
@@ -17,27 +18,6 @@ import {
 	isTuesday,
 } from 'date-fns';
 
-function angularParser(tag) {
-	if (tag === '.') {
-		return {
-			get: function (s) {
-				return s;
-			},
-		};
-	}
-	const expr = expressions.compile(tag.replace(/(’|“|”|‘)/g, "'"));
-	return {
-		get: function (scope, context) {
-			let obj = {};
-			const scopeList = context.scopeList;
-			const num = context.num;
-			for (let i = 0, len = num + 1; i < len; i++) {
-				obj = merge(obj, scopeList[i]);
-			}
-			return expr(scope, obj);
-		},
-	};
-}
 
 function getMonDate(d) {
 	return getToday('', d).substring(5);
@@ -81,8 +61,8 @@ function getSuDate(start_day, num) {
 	return map(xd, getMonDate);
 }
 
-export const wordTemplate = async function (data) {
-	let type = data.train_period_name.substr(-1);
+
+const wordTemplate = async function (data, tempName) {
 	let fileName = `${data.user_name}_${data.user_id}.docx`;
 	let startDay = data.train_period_start;
 	data.today = getToday(1);
@@ -91,28 +71,7 @@ export const wordTemplate = async function (data) {
 	data.xd = getXuDate(startDay, 5);
 	data.sd = getSuDate(startDay, 24);
 
-	const content = fs.readFileSync(
-		path.resolve(`static/word/contract.docx`),
-		'binary'
-	);
-
-	const zip = new PizZip(content);
-
-	const doc = new Docxtemplater(zip, {
-		paragraphLoop: true,
-		linebreaks: true,
-		parser: angularParser,
-	});
-
-	// Render the document (Replace {first_name} by John, {last_name} by Doe, ...)
-	doc.render(data);
-
-	const buf = doc.getZip().generate({
-		type: 'nodebuffer',
-		// compression: DEFLATE adds a compression step.
-		// For a 50MB output document, expect 500ms additional CPU time
-		compression: 'DEFLATE',
-	});
+	const buf = createTemplate(tempName, data);
 
 	// buf is a nodejs Buffer, you can either write it to a
 	// file or res.send it with express for example.
@@ -124,3 +83,6 @@ export const wordTemplate = async function (data) {
 		return '檔案產生失敗';
 	}
 };
+
+
+export {wordTemplate};

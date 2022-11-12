@@ -3,6 +3,7 @@
 # dependencies
 /node_modules
 /static
+/temp
 jspm_packages
 
 # misc

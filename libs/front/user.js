@@ -64,9 +64,30 @@ const createCsv = (trainPeriodId, setDisabled) => {
 		});
 };
 
-const getWordTemp = async (userId) => {
+// 取得考照清單
+// 參數 data = {期別, 學員id[]}
+// 回傳檔案下載連結
+const getExamList = async (data) => {
+	let perId = data.per,
+		stuList = data.list.join("','"),
+		perExam = data.perExam,
+		perName = data.perName;
+
 	try {
-		const res = await axios.get(`${URL}/wordTemp?userId=${userId}`);
+		const res = await axios.get(
+			`${URL}/getExamList?trainPeriodId=${perId}&studentList=${stuList}&perExam=${perExam}&perName=${perName}`
+		);
+		return res.data.name;
+	} catch (e) {
+		window.alert('取得檔案失敗請與管理員連絡');
+	}
+};
+
+const getWordTemp = async (userId, fileName) => {
+	try {
+		const res = await axios.get(
+			`${URL}/wordTemp?userId=${userId}&fileName=${fileName}`
+		);
 		return res;
 	} catch (e) {
 		return window.alert('取得檔案失敗請與管理員連絡');
@@ -79,6 +100,7 @@ export {
 	updatedUser,
 	deletedUser,
 	createCsv,
+	getExamList,
 	getWordTemp,
 	getUserById,
 };

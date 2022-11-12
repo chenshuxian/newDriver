@@ -49,7 +49,7 @@ export default function FormDialog(props) {
 		// console.log(`postcode : ${values.post_code_id} ${data.postCode}`)
 		form.reset({
 			...values,
-			user_addr: postCode[values.post_code_id],
+			user_addr: postCode[values.post_code_id?.substr(0, 3)],
 		});
 	};
 
@@ -67,10 +67,10 @@ export default function FormDialog(props) {
 	};
 
 	const userAddrOnBlur = async (value, form, values) => {
-		console.log(`addr: ${values.user_addr.substr(0, 6)}`);
+		// console.log(`addr: ${values.user_addr.substr(0, 6)}`);
 		form.reset({
 			...values,
-			post_code_id: getKeyByValue(postCode, values.user_addr.substr(0, 6)),
+			post_code_id: getKeyByValue(postCode, values.user_addr?.substr(0, 6)),
 		});
 	};
 

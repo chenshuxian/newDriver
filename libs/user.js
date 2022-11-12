@@ -4,8 +4,75 @@ import dayjs from 'dayjs';
 import isToday from 'dayjs/plugin/isToday';
 import { getTrainBookIdForBook } from '../libs/trainBook';
 import { getTrainPeriodLimit } from './trainPeriod';
+import { func } from 'prop-types';
 
 dayjs.extend(isToday);
+let teacherOne = 'W100510271'; //薛弘
+let teacherTwo = 'W100371863'; //薛逸華
+
+// 取得考官教學人員總數
+// 參數: 考官id, 考試期別
+// 回傳 count 數
+const getExamCount = async function (tId, tpId) {
+	let count;
+	let SQL = `select count(teacher_id) as count from users
+			   inner join train_book as tb on tb.train_book_id = users.train_book_id
+			   inner join train_period as tp on tp.train_period_id = tb.train_period_id
+			   where tp.train_period_id = '${tpId}' and teacher_id = '${tId}'
+			   `;
+
+	[{ count }] = await prisma.$queryRawUnsafe(`${SQL}`);
+
+	return count;
+};
+
+// 設定使用者考試群
+// 依原廠考照教練分群
+// 'W100510271' 薛弘  'W100371863' 薛逸華
+// 若教練所教學員超過10人直接歸為一組，其於的進行合併
+// 1. 先取得考官的教學人數，如小於10，將其補齊
+const setGroupNum = async function (groupId, tpId, tId = false) {
+	console.log(`groupid: ${groupId}`);
+	let maxCount = 10;
+	let sqladd;
+	let sqlInit = `update users 
+	inner join train_book as tb on tb.train_book_id = users.train_book_id
+	inner join train_period as tp on tp.train_period_id = tb.train_period_id
+	set exam_group = ${groupId}`;
+	let sql = `${sqlInit} where tp.train_period_id = '${tpId}' and teacher_id = '${tId}'`;
+
+	if (tId) {
+		// 特殊考官設定
+		let count = await getExamCount(tId, tpId);
+		let sub = maxCount - count;
+		await prisma.$queryRawUnsafe(`${sql}`);
+		// 將 group 人數增加到10人
+		if (sub > 0) {
+			sqladd = `update users set exam_group = ${groupId} where 
+			user_id in (
+				select user_id from (
+				select user_id from users
+				inner join train_book as tb on tb.train_book_id = users.train_book_id
+				inner join train_period as tp on tp.train_period_id = tb.train_period_id 
+				where tp.train_period_id = '${tpId}' and exam_group = 0 and (teacher_id <> '${teacherOne}' or teacher_id <>'${teacherTwo}')
+				limit ${sub}
+				) as tmp )`;
+			try {
+				await prisma.$queryRawUnsafe(`${sqladd}`);
+			} catch (e) {
+				console.log(`err: ${e}`);
+			}
+		}
+	} else {
+		// 將剩於還沒設定的學員設為一個group
+		sqladd = `${sqlInit} where tp.train_period_id = '${tpId}' and users.exam_group = 0`;
+		try {
+			await prisma.$queryRawUnsafe(`${sqladd}`);
+		} catch (e) {
+			console.log(e);
+		}
+	}
+};
 
 const getUser = async function (filter, pagination) {
 	let user;
@@ -229,6 +296,30 @@ const getContractData = async function (userId) {
 
 	return constractData;
 };
+
+// 取得考試清單
+const getExamList = async function (tpId, stuList) {
+	let data = {};
+
+	// 考試分組設定
+	await setGroupNum(1, tpId, teacherOne);
+	await setGroupNum(2, tpId, teacherTwo);
+	await setGroupNum(3, tpId);
+
+	let SQL = `SELECT user_name, user_id, train_period_exam, train_period_name, exam_group FROM users
+	inner join train_book as tb on tb.train_book_id = users.train_book_id
+	inner join train_period as tp on tp.train_period_id = tb.train_period_id
+	where tp.train_period_id = '${tpId}' or user_id in ('${stuList}')
+	order by exam_group desc`;
+	try {
+		data.exam = await prisma.$queryRawUnsafe(SQL);
+	} catch (e) {
+		console.log(e);
+	}
+
+	return data;
+};
+
 export {
 	getUser,
 	getUserByCredentials,
@@ -238,4 +329,5 @@ export {
 	updateUser,
 	deleteUser,
 	getContractData,
+	getExamList,
 };

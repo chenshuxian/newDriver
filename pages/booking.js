@@ -83,7 +83,7 @@ const Booking = ({ data }) => {
 			setSnackOpen(true);
 			let list = await getTrainPeriodList();
 			setButtonList(list.data.train_period_list);
-			setMsg(`預約成功，我們將盡速與您連絡`);
+			setMsg(`預約成功，請於一周內準備好體檢表、2張1吋照片、身份證來駕訓班進行都報名動作`);
 		} else {
 			// console.log(`新增失敗 ${result}`);
 			setSnackOpen(true);

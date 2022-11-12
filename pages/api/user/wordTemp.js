@@ -5,7 +5,7 @@ import { wordTemplate } from '../../../libs/wordTemplate';
 export default async (req, res) => {
 	let wordTemp, data;
 	const {
-		query: { userId },
+		query: { userId, fileName },
 	} = req;
 
 	if (req.method !== 'GET') {
@@ -17,7 +17,7 @@ export default async (req, res) => {
 	try {
 		[data] = await getContractData(userId);
 		data.user_gender = data.user_gender == 1 ? '男' : '女';
-		wordTemp = await wordTemplate(data);
+		wordTemp = await wordTemplate(data,fileName);
 	} catch (e) {
 		console.log(`wordTemp err: ${e}`);
 		res.status(e.statusCode).json(e);

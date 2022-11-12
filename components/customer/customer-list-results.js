@@ -26,6 +26,7 @@ export const CustomerListResults = ({ data }) => {
 	const [studentNumber, setStudentNumber] = useState();
 	const [trainTime, setTrainTime] = useState();
 	const [teacherId, setTeacherId] = useState();
+	const [selectedRows, setSelectedRows] = useState([]);
 	const trainPeriodDetail = JSON.parse(data.trainPeriodDetail);
 	let sourceId = '0641e268-5967-11ec-a655-528abe1c4f3a'; //當期
 
@@ -197,6 +198,8 @@ export const CustomerListResults = ({ data }) => {
 				addUser={addUser}
 				trainPeriod={data.trainPeriod}
 				thisPeriod={data.thisPeriod}
+				trainPeriodDetail={trainPeriodDetail}
+				selectedRows={selectedRows}
 			/>
 			<Box sx={{ mt: 3 }}>
 				<Box style={{ height: 550, width: '100%' }}>
@@ -215,6 +218,9 @@ export const CustomerListResults = ({ data }) => {
 						rows={rows}
 						columns={columns}
 						checkboxSelection
+						onSelectionModelChange={(ids) => {
+							setSelectedRows(ids);
+						  }}
 						componentsProps={{
 							toolbar: {
 								value: searchText,
