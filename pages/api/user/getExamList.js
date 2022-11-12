@@ -91,14 +91,15 @@ export default async (req, res) => {
 			path.resolve(`${folderPath}/${exportName}場考考試名冊.docx`),
 			inRoadBuf
 		);
-		fs.writeFileSync(
+		fs.writeFile(
 			path.resolve(`${folderPath}/${exportName}道考考試名冊.docx`),
-			outRoadBuf
+			outRoadBuf,
+			(err) => {
+				if (!err) {
+					zipFile(folderName);
+				}
+			}
 		);
-        
-		setTimeout(() => {
-			zipFile(folderName);
-		}, 2000);
 
 		res.status(200).json({
 			success: true,
