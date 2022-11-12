@@ -306,7 +306,9 @@ const getExamList = async function (tpId, stuList) {
 	await setGroupNum(2, tpId, teacherTwo);
 	await setGroupNum(3, tpId);
 
-	let SQL = `SELECT user_name, user_id, train_period_exam, train_period_name, exam_group FROM users
+	let SQL = `SELECT user_name, user_id, train_period_exam, train_period_name, exam_group,
+	case exam_group when 1 then '6662' when 2 then '6697' else '8358' end as car_num
+	FROM users
 	inner join train_book as tb on tb.train_book_id = users.train_book_id
 	inner join train_period as tp on tp.train_period_id = tb.train_period_id
 	where tp.train_period_id = '${tpId}' or user_id in ('${stuList}')

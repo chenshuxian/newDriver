@@ -103,9 +103,9 @@ export const CustomerListToolbar = ({
 						disabled={disabled}>
 						{BUTTON_TWO}
 					</Button>
-					<Button startIcon={<CloudDownload fontSize='small' />} sx={{ mr: 1 }}>
+					{/* <Button startIcon={<CloudDownload fontSize='small' />} sx={{ mr: 1 }}>
 						{BUTTON_FOUR}
-					</Button>
+					</Button> */}
 					<Button
 						startIcon={<CloudDownload fontSize='small' />}
 						onClick={downExamList}
