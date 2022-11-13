@@ -2,6 +2,7 @@ import { EasyZip } from 'easy-zip';
 import { writeFile, mkdir, existsSync, writeFileSync, promises } from 'fs';
 import path from 'path';
 import { COMPANY } from '../libs/front/constText';
+const AdmZip = require('adm-zip');
 
 const defaultPath = ['static', 'download'];
 const DOWNLOADPATH = path.join(process.cwd(), ...defaultPath);
@@ -39,14 +40,27 @@ const makeFile = (fileName, data, format, type) => {
 	return result;
 };
 
-const zipFile = (fileName) => {
+const zipFile = async (fileName) => {
 	var zip = new EasyZip();
 	const folder = `${DOWNLOADPATH}/${fileName}`;
 	const filePath = folder + '.zip';
 	//const cb = send(ctx, 'csv.zip', { root: downloadPath })();
-	zip.zipFolder(folder, async () => {
-		zip.writeToFileSycn(filePath);
-	});
+	try {
+		zip.zipFolder(folder, async () => {
+			zip.writeToFile(filePath);
+		});
+	} catch (e) {
+		console.log(e);
+	}
+};
+
+const admZip = async (fileName) => {
+	const zip = new AdmZip();
+	const outputFile = `${fileName}.zip`;
+	const folder = `${DOWNLOADPATH}/${fileName}`;
+	zip.addLocalFolder(folder);
+	zip.writeZip(`${folder}.zip`);
+	console.log(`Created ${outputFile} successfully`);
 };
 
 const checkFile = (fileName) => {
@@ -57,4 +71,4 @@ const checkFile = (fileName) => {
 	return false;
 };
 
-export { makeFile, zipFile, checkFile, pureMakeFile };
+export { makeFile, zipFile, checkFile, pureMakeFile, admZip };

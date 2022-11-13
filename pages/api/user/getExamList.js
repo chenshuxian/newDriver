@@ -3,10 +3,11 @@ import errorCode from '../../../libs/errorCode';
 import { isAdmin } from '../../../libs/auth';
 import { getExamList } from '../../../libs/user';
 import { createTemplate } from '../../../libs/createTemp';
-import { pureMakeFile, zipFile } from '../../../libs/file';
+import { pureMakeFile, zipFile, admZip } from '../../../libs/file';
 
 const fs = require('fs');
 const path = require('path');
+const fsPromises = require('fs').promises;
 
 /**
  * @swagger
@@ -87,19 +88,18 @@ export default async (req, res) => {
 	}
 
 	try {
-		fs.writeFileSync(
+		await fsPromises.writeFile(
 			path.resolve(`${folderPath}/${exportName}場考考試名冊.docx`),
-			inRoadBuf
+			inRoadBuf,
+			'utf8'
 		);
-		fs.writeFile(
+		await fsPromises.writeFile(
 			path.resolve(`${folderPath}/${exportName}道考考試名冊.docx`),
 			outRoadBuf,
-			(err) => {
-				if (!err) {
-					zipFile(folderName);
-				}
-			}
+			'utf8'
 		);
+
+		admZip(folderName);
 
 		res.status(200).json({
 			success: true,
