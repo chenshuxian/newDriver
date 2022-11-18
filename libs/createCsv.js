@@ -2,7 +2,7 @@ import prisma from './prisma';
 import errorCode from './errorCode';
 import { parse } from 'json2csv';
 import { getToday } from './common';
-import { makeFile, zipFile } from './file';
+import { makeFile, zipFile, admZip } from './file';
 
 let trainPeriodName;
 const FORMAT = 'utf8';
@@ -147,7 +147,7 @@ export const getCsvFile = async function (trainPeriodId) {
 	await createCsv(examField, data, 'D');
 	await createCsv(roadField, data, 'E');
 
-	zipFile(trainPeriodName);
+	admZip(trainPeriodName);
 
 	return { message };
 };
