@@ -49,6 +49,7 @@ export default function NewFormDialog(props) {
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
+	const [uuid, setUuid] = useState();
 	const [msg, setMsg] = useState();
 
 	// console.log(`newForm : ${JSON.stringify(data)}`)
@@ -73,11 +74,16 @@ export default function NewFormDialog(props) {
 
 	if (!submittedValues) {
 		// 新增
-		train_period_start =
-			trainPeriodDetail[`${train_period_id}`].train_period_start;
-		train_period_end = trainPeriodDetail[`${train_period_id}`].train_period_end;
-		train_period_exam =
-			trainPeriodDetail[`${train_period_id}`].train_period_exam;
+
+		console.log(trainPeriodDetail);
+		if (!trainPeriodDetail.length === 0) {
+			train_period_start =
+				trainPeriodDetail[`${train_period_id}`].train_period_start;
+			train_period_end =
+				trainPeriodDetail[`${train_period_id}`].train_period_end;
+			train_period_exam =
+				trainPeriodDetail[`${train_period_id}`].train_period_exam;
+		}
 		user_stu_num = studentNumber;
 		ADD = true;
 	} else {
@@ -396,26 +402,32 @@ export default function NewFormDialog(props) {
 		// checkUser is already
 
 		let user = await getUserById(values.user_id);
-		// console.log('checkuserout' + JSON.stringify(user));
-		if (!user?.data?.statusCode == '404' || user.user_id) {
+		console.log('checkuserout' + JSON.stringify(user));
+		console.log(`uuid: ${uuid}`);
+		if (!user?.data?.statusCode == '404' || user.user_id || uuid !== '') {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
+			setUuid(user.user_uuid);
+
 			ADD = false;
 			user_born = user.user_born?.substr(0, 10);
-			form.reset({
-				...values,
-				user_addr: user.user_addr,
-				user_tel: user.user_tel,
-				user_email: user.user_email,
-				post_code_id: user.post_code_id,
-				user_name: user.user_name,
-				user_uuid: user.user_uuid,
-				user_gender,
-			});
+			// 修改使用者
+			if (uuid !== '' && user.user_id) {
+				form.reset({
+					...values,
+					user_addr: user.user_addr,
+					user_tel: user.user_tel,
+					user_email: user.user_email,
+					post_code_id: user.post_code_id,
+					user_name: user.user_name,
+					user_uuid: user.user_uuid,
+					user_gender,
+				});
 
-			form.reset({
-				...values,
-				user_born,
-			});
+				form.reset({
+					...values,
+					user_born,
+				});
+			}
 		} else {
 			ADD = true;
 			form.reset({
@@ -426,7 +438,7 @@ export default function NewFormDialog(props) {
 	};
 
 	const onReset = (f, v) => {
-		console.log(`reset : ${JSON.stringify(f)} ${JSON.stringify(v)}`);
+		// console.log(`reset : ${JSON.stringify(f)} ${JSON.stringify(v)}`);
 		f.reset({
 			...v,
 			user_id: 1234,

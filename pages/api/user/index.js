@@ -165,7 +165,7 @@ import { isLogin, isAdmin } from '../../../libs/auth';
  */
 export default async (req, res) => {
 	const {
-		query: { isDelete, offset, limit },
+		query: { isDelete, offset, limit, page },
 		body: userData,
 		method,
 	} = req;
@@ -189,9 +189,10 @@ export default async (req, res) => {
 			if (offset || limit) {
 				pagination = { offset, limit };
 			}
+			// console.log(`page: ${page}`);
 
 			try {
-				({ user, total } = await getUser(filter, pagination));
+				({ user, total } = await getUser(filter, page));
 			} catch (e) {
 				res.status(e.statusCode).json(e);
 				return;

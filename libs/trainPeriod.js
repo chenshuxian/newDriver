@@ -33,9 +33,10 @@ const getTrainPeriod = async function (filter, pagination) {
 	}
 
 	total = await getTrainPeriodCount(filter);
-	if (!total) {
-		throw errorCode.NotFound;
-	}
+	// if (!total) {
+	// 	console.log('debug 2023');
+	// 	throw errorCode.NotFound;
+	// }
 
 	trainPeriod = await prisma.train_period.findMany(prismaArgs);
 

@@ -19,6 +19,7 @@ export const CustomerListResults = ({ data }) => {
 	const [searchText, setSearchText] = useState('');
 	const [totalRows, setTotalRows] = useState([]);
 	const [rows, setRows] = useState([]);
+	const [rowCountState, setRowCountState] = useState(0);
 	const [open, setOpen] = useState(false);
 	const [snackOpen, setSnackOpen] = useState(false);
 	const [msg, setMsg] = useState();
@@ -124,6 +125,11 @@ export const CustomerListResults = ({ data }) => {
 		location.href = `/word/${url.data.url}`;
 	};
 
+	const pageChange = (p, d) => {
+		// console.log(`page: ${p}, detail: ${JSON.stringify(d)}`);
+		getUserData(p);
+	};
+
 	const columns = [
 		{ field: 'train_period_name', headerName: '期別' },
 		{ field: 'user_stu_num', headerName: '學號' },
@@ -181,15 +187,32 @@ export const CustomerListResults = ({ data }) => {
 		},
 	];
 
-	useEffect(() => {
+	const getUserData = (page) => {
 		axios
-			.get(`/api/user`)
+			.get(`/api/user?page=${page}`)
 			.then((res) => {
 				const userList = res.data.userList;
+				const total = res.data.total;
 				setRows(userList);
+				setTotalRows(userList);
+				setRowCountState(total);
+			})
+			.catch((e) => console.log(`loadExamErr: ${e}`));
+	};
+
+	const getAllUserData = () => {
+		axios
+			.get(`/api/user?page=all`)
+			.then((res) => {
+				const userList = res.data.userList;
 				setTotalRows(userList);
 			})
 			.catch((e) => console.log(`loadExamErr: ${e}`));
+	};
+
+	useEffect(() => {
+		getUserData(1);
+		getAllUserData();
 	}, []);
 
 	return (
@@ -220,7 +243,10 @@ export const CustomerListResults = ({ data }) => {
 						checkboxSelection
 						onSelectionModelChange={(ids) => {
 							setSelectedRows(ids);
-						  }}
+						}}
+						paginationMode='server'
+						rowCount={rowCountState}
+						onPageChange={pageChange}
 						componentsProps={{
 							toolbar: {
 								value: searchText,
