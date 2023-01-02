@@ -1,5 +1,7 @@
+import dynamic from 'next/dynamic'
 import { createSwaggerSpec } from 'next-swagger-doc';
-import SwaggerUI from 'swagger-ui-react';
+const SwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
+// import SwaggerUI from 'swagger-ui-react';
 import 'swagger-ui-react/swagger-ui.css';
 import React, { useEffect } from 'react';
 
