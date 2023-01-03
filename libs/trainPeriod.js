@@ -19,7 +19,8 @@ const getTrainPeriod = async function (filter, pagination) {
 	let trainPeriod;
 	let total;
 	let prismaArgs = {};
-	let thisYear = new Date().getFullYear() - YEAR;
+	// let thisYear = new Date().getFullYear() - YEAR;
+	let thisYear = 111;
 
 	filter = { train_period_start: { startsWith: thisYear.toString() } };
 
