@@ -404,7 +404,11 @@ export default function NewFormDialog(props) {
 		let user = await getUserById(values.user_id);
 		console.log('checkuserout' + JSON.stringify(user));
 		console.log(`uuid: ${uuid}`);
-		if (!user?.data?.statusCode == '404' || user.user_id || uuid !== '') {
+		if (
+			!user?.data?.statusCode == '404' ||
+			user.user_id ||
+			uuid !== undefined
+		) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
 			setUuid(user.user_uuid);
 
