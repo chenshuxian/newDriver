@@ -50,6 +50,7 @@ export default function NewFormDialog(props) {
 
 	const [snackOpen, setSnackOpen] = useState(false);
 	const [uuid, setUuid] = useState(undefined);
+	const [Add, setAdd] = useState(false);
 	const [msg, setMsg] = useState();
 
 	// console.log(`newForm : ${JSON.stringify(data)}`)
@@ -63,7 +64,7 @@ export default function NewFormDialog(props) {
 	// const source_id = '0641e268-5967-11ec-a655-528abe1c4f3a';
 	const user_gender = '1';
 	const model_title = `會員資料管理 - ${submittedValues ? '修改' : '新增'}`;
-	let ADD = false;
+	// let Add = false;
 	let train_period_id = data.thisPeriod;
 	// let teacher_id = getFirstId(data.teacher);
 	let train_period_start = '';
@@ -85,7 +86,7 @@ export default function NewFormDialog(props) {
 				trainPeriodDetail[`${train_period_id}`].train_period_exam;
 		}
 		user_stu_num = studentNumber;
-		ADD = true;
+		setAdd(true);
 	} else {
 		//提供修改登入時取得時間數據
 		train_period_id = submittedValues.train_period_id;
@@ -230,7 +231,7 @@ export default function NewFormDialog(props) {
 	};
 
 	const onSubmit = async (values, form) => {
-		// const ADD = submittedValues === undefined ? true : false;
+		// const Add = submittedValues === undefined ? true : false;
 		// 刪除不必要資訊
 		let {
 			teacher_id,
@@ -302,7 +303,7 @@ export default function NewFormDialog(props) {
 			});
 		};
 
-		if (ADD) {
+		if (Add) {
 			delete submitData.user_uuid; //預防新增時出現user_uuid的bug
 			result = await createdUser(submitData);
 			if (result) {
@@ -405,11 +406,11 @@ export default function NewFormDialog(props) {
 		console.log('checkuserout' + JSON.stringify(user));
 		console.log(`uuid: ${uuid}`);
 		console.log(`uuid2: ${user.user_uuid}`);
-		console.log(`status: ${ADD}`);
-		if (uuid !== undefined || !ADD || user.user_uuid !== undefined) {
+		console.log(`status: ${Add}`);
+		if (uuid !== undefined || !Add || user.user_uuid !== undefined) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
 			setUuid(user.user_uuid);
-			ADD = false;
+			setAdd(false);
 			user_born = user.user_born?.substr(0, 10);
 			// 修改使用者
 			if (user.user_uuid !== undefined && user.user_id) {
@@ -430,7 +431,7 @@ export default function NewFormDialog(props) {
 				});
 			}
 		} else {
-			ADD = true;
+			setAdd(true);
 			form.reset({
 				...values,
 				user_gender,
