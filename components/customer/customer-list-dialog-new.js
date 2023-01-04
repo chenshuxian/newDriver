@@ -406,7 +406,7 @@ export default function NewFormDialog(props) {
 		console.log(`uuid: ${uuid}`);
 		console.log(`uuid2: ${user.user_uuid}`);
 		console.log(`status: ${ADD}`);
-		if (uuid !== undefined || !ADD || user.user_uuid !== '') {
+		if (uuid !== undefined || !ADD || user.user_uuid !== undefined) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
 			setUuid(user.user_uuid);
 			ADD = false;
