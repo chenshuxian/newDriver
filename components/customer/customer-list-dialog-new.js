@@ -49,7 +49,7 @@ export default function NewFormDialog(props) {
 	} = props;
 
 	const [snackOpen, setSnackOpen] = useState(false);
-	const [uuid, setUuid] = useState();
+	const [uuid, setUuid] = useState(undefined);
 	const [msg, setMsg] = useState();
 
 	// console.log(`newForm : ${JSON.stringify(data)}`)
@@ -400,22 +400,21 @@ export default function NewFormDialog(props) {
 		}
 
 		// checkUser is already
-
+		// 修改id 時的bug
 		let user = await getUserById(values.user_id);
+		if (user?.data?.statusCode !== '404') {
+			setUuid(user.user_uuid);
+		}
 		console.log('checkuserout' + JSON.stringify(user));
 		console.log(`uuid: ${uuid}`);
-		if (
-			!user?.data?.statusCode == '404' ||
-			user.user_id ||
-			uuid !== undefined
-		) {
+		console.log(`status: ${ADD}`);
+		if (uuid !== undefined || !ADD) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
-			setUuid(user.user_uuid);
 
 			ADD = false;
 			user_born = user.user_born?.substr(0, 10);
 			// 修改使用者
-			if (uuid !== '' && user.user_id) {
+			if (uuid !== undefined && user.user_id) {
 				form.reset({
 					...values,
 					user_addr: user.user_addr,
