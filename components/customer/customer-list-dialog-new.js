@@ -403,13 +403,12 @@ export default function NewFormDialog(props) {
 		// 修改id 時的bug
 		let user = await getUserById(values.user_id);
 		console.log('checkuserout' + JSON.stringify(user));
-		setUuid(user?.user_uuid);
 		console.log(`uuid: ${uuid}`);
 		console.log(`uuid2: ${user.user_uuid}`);
 		console.log(`status: ${ADD}`);
 		if (uuid !== undefined || !ADD || user.user_uuid) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
-
+			setUuid(user?.user_uuid);
 			ADD = false;
 			user_born = user.user_born?.substr(0, 10);
 			// 修改使用者
