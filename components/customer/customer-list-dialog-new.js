@@ -408,11 +408,11 @@ export default function NewFormDialog(props) {
 		console.log(`status: ${ADD}`);
 		if (uuid !== undefined || !ADD || user.user_uuid) {
 			console.log(`checkuserUPDATE: ${JSON.stringify(user.user_name)}`);
-			await setUuid(user.user_uuid);
+			setUuid(user.user_uuid);
 			ADD = false;
 			user_born = user.user_born?.substr(0, 10);
 			// 修改使用者
-			if (uuid !== undefined && user.user_id) {
+			if (user.user_uuid !== undefined && user.user_id) {
 				form.reset({
 					...values,
 					user_addr: user.user_addr,
