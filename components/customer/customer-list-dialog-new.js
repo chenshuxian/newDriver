@@ -232,6 +232,8 @@ export default function NewFormDialog(props) {
 	const onSubmit = async (values, form) => {
 		// const ADD = submittedValues === undefined ? true : false;
 		// 刪除不必要資訊
+
+		console.log(`submit ${ADD} uuid ${values.user_uuid}`);
 		let {
 			teacher_id,
 			time_id,
@@ -302,8 +304,8 @@ export default function NewFormDialog(props) {
 			});
 		};
 
-		if (ADD) {
-			delete submitData.user_uuid; //預防新增時出現user_uuid的bug
+		if (ADD && values.user_uuid == undefined) {
+			// delete submitData.user_uuid; //預防新增時出現user_uuid的bug
 			result = await createdUser(submitData);
 			if (result) {
 				addRows(result);
