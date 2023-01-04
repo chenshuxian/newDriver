@@ -403,9 +403,7 @@ export default function NewFormDialog(props) {
 		// 修改id 時的bug
 		let user = await getUserById(values.user_id);
 		console.log('checkuserout' + JSON.stringify(user));
-		if (user?.data?.statusCode !== '404') {
-			setUuid(user.user_uuid);
-		}
+		setUuid(user?.user_uuid);
 		console.log(`uuid: ${uuid}`);
 		console.log(`status: ${ADD}`);
 		if (uuid !== undefined || !ADD) {
