@@ -211,7 +211,7 @@ export const CustomerListResults = ({ data }) => {
 	};
 
 	useEffect(() => {
-		getUserData(1);
+		getUserData(0);
 		getAllUserData();
 	}, []);
 
