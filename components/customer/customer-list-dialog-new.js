@@ -233,6 +233,8 @@ export default function NewFormDialog(props) {
 	const onSubmit = async (values, form) => {
 		// const Add = submittedValues === undefined ? true : false;
 		// 刪除不必要資訊
+
+		console.log(`submit Add : ${Add} uuid:${values.user_uuid}`);
 		let {
 			teacher_id,
 			time_id,
