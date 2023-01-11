@@ -8,6 +8,7 @@ import { YEAR } from './front/constText';
 
 const getTeacherAndTime = async function () {
 	let teacherData = await getTeacher();
+	console.log(`t1`);
 	let timeData = await getTime();
 	let teacher = teacherData.teacher;
 	let time = timeData.time;
@@ -140,6 +141,7 @@ const createManyTrainPeriod = async function (data) {
 			createManyTrainBook(TPD, teacher, time);
 		}
 	} catch (e) {
+		console.log(e);
 		if (e.code == 'P2002') {
 			throw errorCode.PrimaryKeyError;
 		}
