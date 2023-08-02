@@ -18,6 +18,7 @@ const https = require('https');
 
 const dayjs = require('dayjs');
 const exp = require('constants');
+const { func } = require('prop-types');
 
 // var options = {
 //   key: fs.readFileSync("./ssl/old/lieyu.fantasyball.tw.key"),

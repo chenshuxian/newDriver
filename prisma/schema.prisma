@@ -16,7 +16,7 @@ model exam {
   exam_img_url String?  @db.VarChar(150)
   create_time  DateTime @default(now()) @db.Timestamp(0)
   update_time  DateTime @default(now()) @db.Timestamp(0)
-  is_delete    Boolean?    @default(false)
+  is_delete    Int      @default(0) @db.TinyInt
 }
 
 model fixStore {
@@ -25,36 +25,42 @@ model fixStore {
 }
 
 model mCar {
-  id         String @id @db.VarChar(50)
-  car_number String @db.VarChar(100)
-  car_maker  String @db.VarChar(40)
-  engin_id   String @db.VarChar(40)
-  born_date  BigInt
-  ins_date   BigInt
-  cc         BigInt
-  color      String @db.VarChar(10)
-  lic_status String @db.VarChar(100)
-  hand_auto  String @db.VarChar(40)
-  road_car   Int
-  createdAt  BigInt
-  updatedAt  BigInt
-  version    BigInt
+  id         String       @id @unique(map: "id_UNIQUE") @default(uuid()) @db.VarChar(50)
+  car_number String       @db.VarChar(100)
+  car_maker  String       @default("日產") @db.VarChar(40)
+  engin_id   String?      @db.VarChar(40)
+  born_date  String?      @db.VarChar(40)
+  ins_date   String?      @db.VarChar(40)
+  cc         String?      @db.VarChar(40)
+  color      String       @default("白色") @db.VarChar(10)
+  lic_status String?      @db.VarChar(100)
+  hand_auto  String       @default("2") @db.VarChar(40)
+  road_car   Int          @default(2)
+  createdAt  String?      @db.VarChar(40)
+  updatedAt  String?      @db.VarChar(40)
+  version    Int?
+  is_delete  Int?         @default(0) @db.TinyInt
+  mCarDetail mCarDetail[]
 }
 
 model mCarDetail {
-  id         String  @id @db.VarChar(50)
-  car_id     String  @db.VarChar(100)
-  teacher_id String  @db.VarChar(50)
-  fix_date   BigInt
-  fix_store  String  @db.VarChar(50)
+  id         String  @unique(map: "id_UNIQUE") @default(uuid()) @db.VarChar(50)
+  car_id     String  @db.VarChar(50)
+  teacher_id String? @db.VarChar(50)
+  fix_date   String  @db.VarChar(40)
+  fix_store  String? @db.VarChar(50)
   device     String? @db.VarChar(255)
-  num        Int
-  price      Int
+  num        Int     @default(1)
+  price      Int?
   salary     Int?
   totalPrice Int
-  createdAt  BigInt
-  updatedAt  BigInt
+  createdAt  String  @db.VarChar(40)
+  updatedAt  String  @db.VarChar(40)
   version    Int?
+  mCar       mCar    @relation(fields: [car_id], references: [id], onDelete: Cascade, map: "fk_mCarDetail_table_mCar_id")
+
+  @@id([id, car_id])
+  @@index([car_id], map: "fk_mCarDetail_table_mCar_id")
 }
 
 model score {
@@ -87,6 +93,7 @@ model users {
   car_type_id       String?     @db.VarChar(36)
   source_id         String?     @db.VarChar(36)
   train_book_id     String?     @db.VarChar(36)
+  exam_group        Int?        @default(0)
   create_time       DateTime?   @default(now()) @db.Timestamp(0)
   update_time       DateTime?   @default(now()) @db.Timestamp(0)
   is_delete         Boolean?    @default(false)

@@ -1,54 +1,71 @@
-import Head from 'next/head';
-import { Box, Container, Grid } from '@mui/material';
-import { Budget } from '../../components/dashboard/budget';
-import { LatestOrders } from '../../components/dashboard/latest-orders';
-import { LatestProducts } from '../../components/dashboard/latest-products';
-//import { Sales } from '../../components/dashboard/sales';
-import { TasksProgress } from '../../components/dashboard/tasks-progress';
-import { TotalCustomers } from '../../components/dashboard/total-customers';
-import { TotalProfit } from '../../components/dashboard/total-profit';
-// import { TrafficByDevice } from '../../components/dashboard/traffic-by-device';
+import { Box, Container, Grid, Typography } from '@mui/material';
+import { MCarDetail } from '../../components/dashboard/mCarDetail';
+import { MCar } from '../../components/dashboard/mCar';
 import { DashboardLayout } from '../../components/dashboard-layout';
 
-const Dashboard = () => (
-	<>
-		<Box
-			component='main'
-			sx={{
-				flexGrow: 1,
-				py: 8,
-			}}>
-			<Container maxWidth={false}>
-				<Grid container spacing={3}>
-					<Grid item xl={3} lg={3} sm={6} xs={12}>
-						<TotalProfit sx={{ height: '100%' }} />
+import { useEffect, useState } from 'react';
+import { getmCarList } from '../../libs/front/mCar';
+import { MyToolbar } from '../../components/dashboard/myToolbar';
+
+const carNumberOption = async (data) => {
+	let option = {};
+	data.forEach((entry) => {
+		option[entry.id] = entry.car_number;
+	});
+
+	return option;
+};
+
+const Dashboard = () => {
+	const [cars, setCars] = useState([]);
+	const [carDetail, setCarDetail] = useState({});
+	const [carOption, setCarOption] = useState({});
+	const [carId, setCarId] = useState();
+	const carTypeOption = { 1: '手排', 2: '自排' };
+	const roadCarOption = { 1: '道駕', 2: '場內' };
+	let carRows = [];
+	let mapping = {};
+	let option;
+	useEffect(async () => {
+		carRows = await getmCarList();
+		option = await carNumberOption(carRows);
+		carRows.forEach((entry) => {
+			mapping[entry.id] = entry.mCarDetail;
+		});
+		setCarId(Object.keys(option)[0]);
+		setCarOption(option);
+		setCarDetail(mapping);
+		setCars(carRows);
+	}, []);
+	return (
+		<>
+			<Box
+				component='main'
+				sx={{
+					flexGrow: 1,
+					py: 8,
+				}}>
+				<Container maxWidth={false}>
+					<MyToolbar carOption={carOption} carId={carId} setCarId={setCarId} />
+					<Grid container spacing={3}>
+						<Grid item sx={{ height: 550, width: '50%' }}>
+							<MCar
+								setCarId={setCarId}
+								cars={cars}
+								carTypeOption={carTypeOption}
+								roadCarOption={roadCarOption}
+								carOption={carOption}
+							/>
+						</Grid>
+						<Grid item sx={{ height: 550, width: '50%' }}>
+							<MCarDetail carDetail={carDetail} carId={carId} carOption={carOption} />
+						</Grid>
 					</Grid>
-					<Grid item lg={3} sm={6} xl={3} xs={12}>
-						<Budget />
-					</Grid>
-					<Grid item xl={3} lg={3} sm={6} xs={12}>
-						<TotalCustomers />
-					</Grid>
-					<Grid item xl={3} lg={3} sm={6} xs={12}>
-						<TasksProgress />
-					</Grid>
-					{/* <Grid item lg={8} md={12} xl={9} xs={12}>
-						<Sales />
-					</Grid> */}
-					{/* <Grid item lg={4} md={6} xl={3} xs={12}>
-						<TrafficByDevice sx={{ height: '100%' }} />
-					</Grid> */}
-					<Grid item lg={4} md={6} xl={3} xs={12}>
-						<LatestProducts sx={{ height: '100%' }} />
-					</Grid>
-					<Grid item lg={8} md={12} xl={9} xs={12}>
-						<LatestOrders />
-					</Grid>
-				</Grid>
-			</Container>
-		</Box>
-	</>
-);
+				</Container>
+			</Box>
+		</>
+	);
+};
 
 Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 

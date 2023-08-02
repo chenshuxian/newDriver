@@ -21,7 +21,7 @@ const items = [
 	{
 		href: '/admin',
 		icon: <ChartBarIcon fontSize='small' />,
-		title: '統計分析',
+		title: '車輛管理',
 	},
 	{
 		href: '/admin/customers',

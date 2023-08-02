@@ -10,43 +10,16 @@ import { getAdminUserById } from '../../../libs/adminUser';
 export default NextAuth({
 	// https://next-auth.js.org/configuration/providers
 	providers: [
-		// Providers.Email({
-		//   server: process.env.EMAIL_SERVER,
-		//   from: process.env.EMAIL_FROM,
-		// }),
-		// Temporarily removing the Apple provider from the demo site as the
-		// callback URL for it needs updating due to Vercel changing domains
-		/*
-    Providers.Apple({
-      clientId: process.env.APPLE_ID,
-      clientSecret: {
-        appleId: process.env.APPLE_ID,
-        teamId: process.env.APPLE_TEAM_ID,
-        privateKey: process.env.APPLE_PRIVATE_KEY,
-        keyId: process.env.APPLE_KEY_ID,
-      },
-    }),
-    */
-		// Providers.Facebook({
-		//   clientId: process.env.FACEBOOK_ID,
-		//   clientSecret: process.env.FACEBOOK_SECRET,
-		//   profile(profile) {
-		//     return {
-		//       id: profile.id,
-		//       name: profile.name,
-		//       email: profile.email,
-		//       image: profile.picture.data.url,
-		//     }
-		//   },
-		// }),
+	
 		CredentialsProvider({
 			credentials: {
 				username: { label: 'Username', type: 'text', placeholder: 'Username' },
 				password: { label: 'password', type: 'text', placeholder: 'Password' },
 			},
 			async authorize(credentials) {
+				console.log(`credentials11: ${credentials}`);
 				const data = await userLogin(credentials);
-				// console.log(`credentials: ${data.user_id}`);
+
 				const user = {
 					id: data.user_id,
 					name: data.user_name,
@@ -58,8 +31,9 @@ export default NextAuth({
 		CredentialsProvider({
 			id: 'adminLogin',
 			async authorize(credentials) {
+				// console.log(`credentials22: ${JSON.stringify(credentials)}`);
 				const data = await adminLogin(credentials);
-				console.log(`credentials: ${JSON.stringify(data)}`);
+
 				const user = {
 					id: data.id,
 					name: data.name,
@@ -67,25 +41,6 @@ export default NextAuth({
 				return user;
 			},
 		}),
-		// Providers.GitHub({
-		//   clientId: process.env.GITHUB_ID,
-		//   clientSecret: process.env.GITHUB_SECRET,
-		//   // https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
-		//   scope: "read:user"
-		// }),
-		// Providers.Google({
-		//   clientId: process.env.GOOGLE_ID,
-		//   clientSecret: process.env.GOOGLE_SECRET,
-		// }),
-		// Providers.Twitter({
-		//   clientId: process.env.TWITTER_ID,
-		//   clientSecret: process.env.TWITTER_SECRET,
-		// }),
-		// Providers.Auth0({
-		//   clientId: process.env.AUTH0_ID,
-		//   clientSecret: process.env.AUTH0_SECRET,
-		//   domain: process.env.AUTH0_DOMAIN,
-		// }),
 	],
 	// Database optional. MySQL, Maria DB, Postgres and MongoDB are supported.
 	// https://next-auth.js.org/configuration/databases
@@ -146,6 +101,13 @@ export default NextAuth({
 	// when an action is performed.
 	// https://next-auth.js.org/configuration/callbacks
 	callbacks: {
+		async redirect({ url, baseUrl }) {
+			// Allows relative callback URLs
+			if (url.startsWith("/")) return `${baseUrl}${url}`
+			// Allows callback URLs on the same origin
+			else if (new URL(url).origin === baseUrl) return url
+			return baseUrl
+		},
 		async signIn(user, account, profile, email, credentials) {
 			let registeredUser;
 			//console.log(`user Sign ${JSON.stringify(user)} `);

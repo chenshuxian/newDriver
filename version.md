@@ -46,4 +46,7 @@ libs/front/user getStudentNumber
 
 1110604
 自手排 bug 修正自排 A 手排 M
-管理端新增使用者沒有進行id確認
+管理端新增使用者沒有進行 id 確認
+
+1110708
+user_born.substr bug fix
