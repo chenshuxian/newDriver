@@ -10,14 +10,13 @@ import { getAdminUserById } from '../../../libs/adminUser';
 export default NextAuth({
 	// https://next-auth.js.org/configuration/providers
 	providers: [
-	
 		CredentialsProvider({
 			credentials: {
 				username: { label: 'Username', type: 'text', placeholder: 'Username' },
 				password: { label: 'password', type: 'text', placeholder: 'Password' },
 			},
 			async authorize(credentials) {
-				console.log(`credentials11: ${credentials}`);
+				//console.log(`credentials11: ${credentials}`);
 				const data = await userLogin(credentials);
 
 				const user = {
@@ -101,13 +100,6 @@ export default NextAuth({
 	// when an action is performed.
 	// https://next-auth.js.org/configuration/callbacks
 	callbacks: {
-		async redirect({ url, baseUrl }) {
-			// Allows relative callback URLs
-			if (url.startsWith("/")) return `${baseUrl}${url}`
-			// Allows callback URLs on the same origin
-			else if (new URL(url).origin === baseUrl) return url
-			return baseUrl
-		},
 		async signIn(user, account, profile, email, credentials) {
 			let registeredUser;
 			//console.log(`user Sign ${JSON.stringify(user)} `);
