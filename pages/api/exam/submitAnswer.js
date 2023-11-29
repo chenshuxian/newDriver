@@ -1,5 +1,5 @@
 /* eslint-disable import/no-anonymous-default-export */
-import { checkAnswer } from '../../../libs/exam';
+import { checkAnswer, getExamNum } from '../../../libs/exam';
 import { createScore } from '../../../libs/score';
 import errorCode from '../../../libs/errorCode';
 import { isLogin, getUserId } from '../../../libs/auth';
@@ -22,6 +22,9 @@ export default async (req, res) => {
 			let examNum;
 			let scoreData;
 
+			examNum = await getExamNum(Object.keys(answerData)[0]);
+			//console.log(`examNum==========:${examNum}`);
+
 			if (!answerData || typeof answerData !== 'object') {
 				res.status(400).json(errorCode.BadRequest);
 				return;
@@ -41,11 +44,13 @@ export default async (req, res) => {
 
 			try {
 				examAnsErr = await checkAnswer(answerData);
+				// examNum = await getExamNum(Object.keys(answerData)[0]);
+				//console.log(`exam number : ${examNum}`);
 				if (examAnsErr) {
 					score = (Object.keys(answerData).length - examAnsErr.length) * 2.5;
 					examAnsErr = examAnsErr.map((exam) => {
 						let exam_ans = exam.exam_option.split(';');
-						examNum = exam.exam_number;
+						//examNum = exam.exam_number;
 						return {
 							exam_id: exam.exam_id,
 							exam_title: exam.exam_title,
@@ -55,6 +60,7 @@ export default async (req, res) => {
 						};
 					});
 				} else {
+					//examNum = await getExamNum(Object.keys(answerData)[0]);
 					score = 100;
 				}
 			} catch (e) {

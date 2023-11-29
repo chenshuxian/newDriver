@@ -214,6 +214,23 @@ const getExamTypeId = async function (id) {
 	return exam?.exam_type_id || '';
 };
 
+const getExamNum = async function (exam_id) {
+	let exam;
+	try {
+		exam = await prisma.exam.findMany({
+			where: {
+				exam_id,
+			},
+		});
+	} catch (e) {
+		console.log(`ans err: ${e}`);
+	}
+
+	//console.log(`getExamNum: ${JSON.stringify(exam[0])}`);
+
+	return exam[0]?.exam_number || '';
+};
+
 const importExam = async function (records, { examTypeId }) {
 	let data;
 	let count;
@@ -299,4 +316,5 @@ export {
 	getExamTypeId,
 	getExamById,
 	importExam,
+	getExamNum,
 };
