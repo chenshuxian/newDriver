@@ -273,7 +273,7 @@ const importExam = async function (records, { examTypeId }) {
 	}
 
 	data = records.map((exam) => {
-		let record = { exam_type_id: examTypeId };
+		let record = { exam_number: examTypeId };
 
 		Object.entries(fieldMapping).forEach(([key, index]) => {
 			if (index === -1) {
