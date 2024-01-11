@@ -29,7 +29,7 @@ Exams.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 export async function getServerSideProps(context) {
 	let data = {};
 	let filter = {};
-	filter['is_delete'] = false;
+	filter['is_delete'] = 0;
 	const exam = await getExam(filter);
 	data.exam = JSON.stringify(exam.exam);
 
