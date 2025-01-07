@@ -7,6 +7,7 @@ import { createManyTrainBook } from './trainBook';
 import { YEAR } from './front/constText';
 
 const getTeacherAndTime = async function () {
+	console.log(`t0`);
 	let teacherData = await getTeacher();
 	console.log(`t1`);
 	let timeData = await getTime();
@@ -20,10 +21,18 @@ const getTrainPeriod = async function (filter, pagination) {
 	let trainPeriod;
 	let total;
 	let prismaArgs = {};
+	let month = new Date().getMonth();
 	let thisYear = new Date().getFullYear() - YEAR;
-	// let thisYear = 111;
+	let filter = { train_period_start: { startsWith: thisYear.toString() } };
+	if (month == 0) {
+		filter =
+			{OR : [
+				({ train_period_start: { startsWith: thisYear.toString() } },
+				{ train_period_start: { startsWith: thisYear.toString + '/12' } })
+			]};
+	}
 
-	filter = { train_period_start: { startsWith: thisYear.toString() } };
+	// let thisYear = 113;
 
 	if (filter) {
 		prismaArgs['where'] = filter;
@@ -129,12 +138,15 @@ const createTrainPeriod = async function (data) {
 
 const createManyTrainPeriod = async function (data) {
 	let trainPeriod;
+	console.log(`cmt: data0`);
 	let { teacher, time } = await getTeacherAndTime();
 	try {
+		console.log(`cmt: data1`);
 		trainPeriod = await prisma.train_period.createMany({
 			data,
 		});
 
+		console.log(`cmt: data2`);
 		if (trainPeriod) {
 			let trainPeriodData = await getTrainPeriod();
 			let TPD = trainPeriodData.trainPeriod;
