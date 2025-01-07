@@ -29,7 +29,7 @@ const getTrainPeriod = async function (filter, pagination) {
 		filter = {
 			OR: [
 				({ train_period_start: { startsWith: thisYear.toString() } },
-				{ train_period_start: { startsWith: thisYear.toString + '/12' } }),
+				{ train_period_start: { startsWith: thisYear.toString() + '/12' } }),
 			],
 		};
 	}
