@@ -25,11 +25,13 @@ const getTrainPeriod = async function (filter, pagination) {
 	let thisYear = new Date().getFullYear() - YEAR;
 	let filter = { train_period_start: { startsWith: thisYear.toString() } };
 	if (month == 0) {
-		filter =
-			{OR : [
+		// 1月時取得今年期別和前年12月的期別
+		filter = {
+			OR: [
 				({ train_period_start: { startsWith: thisYear.toString() } },
-				{ train_period_start: { startsWith: thisYear.toString + '/12' } })
-			]};
+				{ train_period_start: { startsWith: thisYear.toString + '/12' } }),
+			],
+		};
 	}
 
 	// let thisYear = 113;
