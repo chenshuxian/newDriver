@@ -23,7 +23,7 @@ const getTrainPeriod = async function (filter, pagination) {
 	let prismaArgs = {};
 	let month = new Date().getMonth();
 	let thisYear = new Date().getFullYear() - YEAR;
-	let filter = { train_period_start: { startsWith: thisYear.toString() } };
+	filter = { train_period_start: { startsWith: thisYear.toString() } };
 	if (month == 0) {
 		// 1月時取得今年期別和前年12月的期別
 		filter = {
