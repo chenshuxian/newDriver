@@ -17,19 +17,20 @@ const getTeacherAndTime = async function () {
 	return { teacher, time };
 };
 
-const getTrainPeriod = async function (filter, pagination) {
+// init for 初始時只抓今年的trainPeriod Data
+const getTrainPeriod = async function (filter, pagination, init = true) {
 	let trainPeriod;
 	let total;
 	let prismaArgs = {};
 	let month = new Date().getMonth();
 	let thisYear = new Date().getFullYear() - YEAR;
 	filter = { train_period_start: { startsWith: thisYear.toString() } };
-	if (month == 0) {
+	if (month == 0 && init) {
 		// 1月時取得今年期別和前年12月的期別
 		filter = {
 			OR: [
-				({ train_period_start: { startsWith: thisYear.toString() } },
-				{ train_period_start: { startsWith: thisYear.toString() + '/12' } }),
+				{ train_period_start: { startsWith: thisYear.toString() } },
+				{ train_period_start: { startsWith: thisYear - 1 + '/12' } },
 			],
 		};
 	}
@@ -150,7 +151,7 @@ const createManyTrainPeriod = async function (data) {
 
 		console.log(`cmt: data2`);
 		if (trainPeriod) {
-			let trainPeriodData = await getTrainPeriod();
+			let trainPeriodData = await getTrainPeriod('','',false);
 			let TPD = trainPeriodData.trainPeriod;
 			createManyTrainBook(TPD, teacher, time);
 		}

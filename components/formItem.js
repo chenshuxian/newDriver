@@ -6,7 +6,7 @@ const SELECTFIELD = (props) => {
 	return (
 		<Grid key={i} item xs={12} md={el.xs}>
 			<Select fullWidth required={el.required} name={el.name} label={el.label}>
-				{Object.entries(el.list).map(([k, v]) => (
+				{Object.entries(el.list || {}).map(([k, v]) => (
 					<MenuItem key={k} value={k}>
 						{v}
 					</MenuItem>
